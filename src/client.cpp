@@ -43,18 +43,20 @@ namespace gudev {
             return g_udev_client_new(filter.data());
         }
 
+    }
 
-        void
-        dispatch_uevent_signal(GUdevClient* client_,
-                               gchar*       action_,
-                               GUdevDevice* device_,
-                               gpointer     data)
-        {
-            Client* client = reinterpret_cast<Client*>(data);
-            string action = action_;
-            Device device = Device::view(device_);
-            client->on_uevent(action, device);
-        }
+    void
+    Client::dispatch_uevent_signal(GUdevClient* client_,
+                                   gchar*       action_,
+                                   GUdevDevice* device_,
+                                   gpointer     data)
+    {
+        Client* client = reinterpret_cast<Client*>(data);
+        string action = action_;
+        Device device = Device::view(device_);
+        client->on_uevent(action, device);
+        if (client->uevent_callback)
+            client->uevent_callback(action, device);
     }
 
 

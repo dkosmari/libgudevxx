@@ -19,12 +19,13 @@
 #ifndef LIBGUDEVXX_CLIENT_HPP_GUARD
 #define LIBGUDEVXX_CLIENT_HPP_GUARD
 
-#include <memory>
-#include <string>
-#include <vector>
 #include <cstdint>
 #include <filesystem>
+#include <functional>
+#include <memory>
 #include <optional>
+#include <string>
+#include <vector>
 
 #include <gudev/gudev.h>
 
@@ -74,6 +75,13 @@ namespace gudev {
         get_sysfs(const path& sysfs_path);
 
 
+        // callback for "uevent" signal
+        std::function<void(const string&, const Device& device)> uevent_callback;
+
+
+    protected:
+
+        // or override this method
         virtual
         void
         on_uevent(const string& action,
@@ -86,6 +94,13 @@ namespace gudev {
         gulong uevent_handler = connect_uevent();
 
         gulong connect_uevent();
+
+        static
+        void
+        dispatch_uevent_signal(GUdevClient* client_,
+                               gchar*       action_,
+                               GUdevDevice* device_,
+                               gpointer     data);
 
     }; // class Client
 
