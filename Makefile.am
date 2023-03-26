@@ -7,10 +7,12 @@ ACLOCAL_AMFLAGS = -I m4
 EXTRA_DIST = \
 	bootstrap \
 	libgudevxx.pc.in \
-	libgudevxx.spec.in
+	libgudevxx.spec.in \
+	README.md
 
 
 SUBDIRS = \
+	include/gudevxx \
 	src \
 	tests
 

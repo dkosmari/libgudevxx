@@ -2,8 +2,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.70])
-AC_INIT([libgudevxx], [0.2], [])
-AC_CONFIG_SRCDIR([src/client.hpp])
+AC_INIT([libgudevxx], [0.2.dev], [])
+AC_CONFIG_SRCDIR([src/Client.cpp])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
@@ -21,7 +21,8 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
 AC_LANG([C++])
-AX_CXX_COMPILE_STDCXX_17([noext])
+#AX_CXX_COMPILE_STDCXX([20])
+AX_APPEND_COMPILE_FLAGS([-std=c++20], [CXX])
 
 PKG_INSTALLDIR
 
@@ -37,9 +38,11 @@ AC_TYPE_UINT64_T
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([libgudevxx.pc
+AC_CONFIG_FILES([Makefile
+                 include/gudevxx/Makefile
+                 libgudevxx.pc
                  libgudevxx.spec
-                 Makefile
                  src/Makefile
-                 tests/Makefile])
+                 tests/Makefile
+])
 AC_OUTPUT

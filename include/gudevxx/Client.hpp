@@ -1,23 +1,14 @@
 /*
  *  libgudevxx - a C++ wrapper for libgudev
- *  Copyright (C) 2021  Daniel K. O.
+ *  Copyright (C) 2021-2023  Daniel K. O.
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *  SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef LIBGUDEVXX_CLIENT_HPP_GUARD
-#define LIBGUDEVXX_CLIENT_HPP_GUARD
+
+#ifndef LIBGUDEVXX_CLIENT_HPP
+#define LIBGUDEVXX_CLIENT_HPP
+
 
 #include <cstdint>
 #include <filesystem>
@@ -29,8 +20,8 @@
 
 #include <gudev/gudev.h>
 
-#include "device.hpp"
-#include "gobject_base.hpp"
+#include "Device.hpp"
+#include "detail/GObjectBase.hpp"
 
 
 namespace gudev {
@@ -43,10 +34,10 @@ namespace gudev {
     using std::filesystem::path;
 
 
-    struct Client : GObjectBase<GUdevClient, Client> {
+    struct Client : detail::GObjectBase<GUdevClient, Client> {
 
 
-        using Base = GObjectBase<GUdevClient, Client>;
+        using Base = detail::GObjectBase<GUdevClient, Client>;
 
 
         Client(); // don't listen on any subsystem

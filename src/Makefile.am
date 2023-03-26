@@ -1,28 +1,23 @@
 # src/Makefile.am
 
 
+AM_CXXFLAGS = -Wall -Wextra
+
+
 AM_CPPFLAGS = \
+	-I$(top_srcdir)/include \
 	$(GUDEV_CFLAGS)
 
 
 lib_LTLIBRARIES = libgudevxx.la
 
-gudevxxdir = $(includedir)/gudevxx
-
-gudevxx_HEADERS = \
-	client.hpp \
-	device.hpp \
-	enumerator.hpp \
-	gobject_base.hpp \
-	utils.hpp
-
 
 libgudevxx_la_SOURCES = \
-	client.cpp \
-	device.cpp \
-	enumerator.cpp \
-	gobject_base.hpp \
-	utils.hpp
+	Client.cpp \
+	Device.cpp \
+	Enumerator.cpp \
+	GObjectBase.hpp \
+	utils.hpp utils.hpp
 
 
 libgudevxx_la_LIBADD = $(GUDEV_LIBS)

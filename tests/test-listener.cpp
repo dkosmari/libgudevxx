@@ -48,7 +48,7 @@
 #include <glib-unix.h>
 #include <glibmm.h>
 
-#include "client.hpp"
+#include <gudevxx/Client.hpp>
 
 
 using std::chrono::duration_cast;
