@@ -1,7 +1,7 @@
 Name:           @PACKAGE_NAME@
 Version:        @PACKAGE_VERSION@
 Release:        1%{?dist}
-Summary:        A C++ wrapper for libgudev
+Summary:        A C++20 wrapper for libgudev
 
 License:        GPLv3
 Source0:        @PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.gz
@@ -12,7 +12,7 @@ Source0:        @PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.gz
 Group:           System/Libraries
 
 %description
-%{name} is a C++17 wrapper for libgudev
+%{name} is a C++20 wrapper for libgudev
 
 
 %package        devel
@@ -46,11 +46,12 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
 %files
 %license COPYING
-%doc AUTHORS ChangeLog NEWS README
+%doc AUTHORS ChangeLog NEWS
 %{_libdir}/*.so.*
 
+
 %files devel
-%doc INSTALL
+%doc INSTALL README.md
 %{_includedir}/*
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/libgudevxx.pc

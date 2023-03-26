@@ -27,47 +27,44 @@
 namespace gudev {
 
 
-    using std::optional;
-    using std::string;
-    using std::uint64_t;
-    using std::vector;
-    using std::filesystem::path;
+    class Client :
+        public detail::GObjectBase<GUdevClient, Client> {
 
-
-    struct Client : detail::GObjectBase<GUdevClient, Client> {
-
+    public:
 
         using Base = detail::GObjectBase<GUdevClient, Client>;
 
 
         Client(); // don't listen on any subsystem
-        Client(const vector<string>& subsystems);
+        Client(const std::vector<std::string>& subsystems);
 
-        virtual ~Client();
+        virtual
+        ~Client();
 
 
         // query operations
 
-        vector<Device>
-        query(const string& subsystem = "");
+        std::vector<Device>
+        query(const std::string& subsystem = "");
 
-        optional<Device>
-        get(const string& subsystem,
-            const string& name);
+        std::optional<Device>
+        get(const std::string& subsystem,
+            const std::string& name);
 
-        optional<Device>
+        std::optional<Device>
         get(GUdevDeviceType type,
-            uint64_t number);
+            std::uint64_t number);
 
-        optional<Device>
-        get(const path& device_path);
+        std::optional<Device>
+        get(const std::filesystem::path& device_path);
 
-        optional<Device>
-        get_sysfs(const path& sysfs_path);
+        std::optional<Device>
+        get_sysfs(const std::filesystem::path& sysfs_path);
 
 
         // callback for "uevent" signal
-        std::function<void(const string&, const Device& device)> uevent_callback;
+        std::function<void (const std::string&,
+                            const Device& device)> uevent_callback;
 
 
     protected:
@@ -75,13 +72,12 @@ namespace gudev {
         // or override this method
         virtual
         void
-        on_uevent(const string& action,
+        on_uevent(const std::string& action,
                   const Device& device);
 
 
     private:
 
-        using Base::Base;
         gulong uevent_handler = connect_uevent();
 
         gulong connect_uevent();
@@ -92,6 +88,7 @@ namespace gudev {
                                gchar*       action_,
                                GUdevDevice* device_,
                                gpointer     data);
+
 
     }; // class Client
 

@@ -16,8 +16,7 @@ libgudevxx_la_SOURCES = \
 	Client.cpp \
 	Device.cpp \
 	Enumerator.cpp \
-	GObjectBase.hpp \
-	utils.hpp utils.hpp
+	utils.hpp
 
 
 libgudevxx_la_LIBADD = $(GUDEV_LIBS)

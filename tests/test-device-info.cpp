@@ -75,7 +75,7 @@ void print_device(const Device& dev)
         }
         cout << left << right << "\n";
     };
-    auto printif = [&aprint](const string& label, const optional<auto>& val)
+    auto printif = [&aprint](const string& label, const auto& val)
     {
         if (val) {
             using T = std::remove_reference_t<
@@ -136,8 +136,13 @@ void print_device(const Device& dev)
     // TODO: print with the same syntax as udev
     if (auto pkeys = dev.property_keys(); !pkeys.empty()) {
         aprint("Properties: ");
-        for (const auto& k : pkeys)
+        for (const auto& k : pkeys) {
             aprint2(k, dev.property_as<string>(k));
+            dev.property_as<int>(k);
+            dev.property_as<std::uint64_t>(k);
+            dev.property_as<double>(k);
+            dev.property_as<bool>(k);
+        }
     }
 
     // TODO: print with the same syntax as udev

@@ -31,12 +31,13 @@ namespace gudev {
         Enumerator(Client& client);
 
 
-        void match_subsystem(const std::string& subsystem);
+        void
+        match_subsystem(const std::string& subsystem);
 
         void nomatch_subsystem(const std::string& subsystem);
 
         void match_sysfs_attr(const std::string& key,
-                              const string& val);
+                              const std::string& val);
 
         void nomatch_sysfs_attr(const std::string& key,
                                 const std::string& val);

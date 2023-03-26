@@ -1,6 +1,9 @@
 # include/gudevxx/Makefile.am
 
 
+AM_CPPFLAGS = $(GUDEV_CFLAGS)
+
+
 gudevxxdir = $(includedir)/gudevxx
 
 

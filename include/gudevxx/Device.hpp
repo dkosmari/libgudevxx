@@ -11,13 +11,13 @@
 
 
 #include <chrono>
+#include <concepts>
 #include <cstdint>
 #include <filesystem>
-#include <memory>
+#include <iosfwd>
 #include <optional>
 #include <string>
 #include <vector>
-#include <iosfwd>
 
 #include <gudev/gudev.h>
 
@@ -26,90 +26,112 @@
 
 namespace gudev {
 
+    class Device :
+        public detail::GObjectBase<GUdevDevice, Device> {
 
-    using std::chrono::microseconds;
-    using std::filesystem::path;
-    using std::optional;
-    using std::string;
-    using std::uint64_t;
-    using std::vector;
+    public:
 
 
-    using opt_string = optional<string>;
-    using opt_path = optional<path>;
-    using opt_uint64_t = optional<uint64_t>;
-
-
-    struct Device : detail::GObjectBase<::GUdevDevice, Device> {
-
+        using Base = detail::GObjectBase<GUdevDevice, Device>;
 
         enum class Type {
-            no_device = G_UDEV_DEVICE_TYPE_NONE,
+            no_device    = G_UDEV_DEVICE_TYPE_NONE,
             block_device = G_UDEV_DEVICE_TYPE_BLOCK,
-            char_device = G_UDEV_DEVICE_TYPE_CHAR,
+            char_device  = G_UDEV_DEVICE_TYPE_CHAR
         };
 
 
-        using Base = detail::GObjectBase<::GUdevDevice, Device>;
+        std::optional<std::string>
+        subsystem() const;
 
+        std::optional<std::string>
+        devtype() const;
 
-        opt_string subsystem() const;
-        opt_string devtype() const;
-        opt_string name() const;
-        opt_string number() const;
+        std::optional<std::string>
+        name() const;
 
-        opt_path sysfs() const;
+        std::optional<std::string>
+        number() const;
 
-        opt_string driver() const;
-        opt_string action() const;
+        std::optional<std::filesystem::path>
+        sysfs() const;
 
-        opt_uint64_t seqnum() const;
+        std::optional<std::string>
+        driver() const;
+
+        std::optional<std::string>
+        action() const;
+
+        std::optional<std::uint64_t>
+        seqnum() const;
 
         Type type() const;
 
-        opt_uint64_t device_number() const;
+        std::optional<std::uint64_t>
+        device_number() const;
 
-        opt_path device_file() const;
+        std::optional<std::filesystem::path>
+        device_file() const;
 
-        vector<path> device_symlinks() const;
+        std::vector<std::filesystem::path>
+        device_symlinks() const;
 
-        optional<Device> parent() const;
-        optional<Device> parent(const string& subsystem) const;
-        optional<Device> parent(const string& subsystem,
-                                const string& devtype) const;
+        std::optional<Device>
+            parent() const;
 
-        vector<string> tags() const;
+        std::optional<Device>
+        parent(const std::string& subsystem) const;
 
-        bool has_tag(const string& tag) const;
+        std::optional<Device>
+        parent(const std::string& subsystem,
+               const std::string& devtype) const;
 
-        bool initialized() const;
+        std::vector<std::string>
+        tags() const;
 
-        microseconds since_initialized() const;
+        bool
+        has_tag(const std::string& tag) const;
 
-        vector<string> property_keys() const;
+        bool
+        initialized() const;
 
-        bool has_property(const string& key) const;
+        std::chrono::microseconds
+        since_initialized() const;
 
-        opt_string property(const string& key) const;
+        std::vector<std::string>
+        property_keys() const;
+
+        bool
+        has_property(const std::string& key) const;
+
+        std::optional<std::string>
+        property(const std::string& key) const;
 
         // T = int, uint64_t, double, bool, string
         template<typename T>
-        T property_as(const string& key) const;
+        T
+        property_as(const std::string& key) const;
 
-        vector<string> property_tokens(const string& key) const;
+        std::vector<std::string>
+        property_tokens(const std::string& key) const;
 
 
-        vector<string> sysfs_attr_keys() const;
+        std::vector<std::string>
+        sysfs_attr_keys() const;
 
-        bool has_sysfs_attr(const string& key) const;
+        bool
+        has_sysfs_attr(const std::string& key) const;
 
-        opt_string sysfs_attr(const string& key) const;
+        std::optional<std::string>
+        sysfs_attr(const std::string& key) const;
 
         // T = int, uint64_t, double, bool, string
         template<typename T>
-        T sysfs_attr_as(const string& key) const;
+        T
+        sysfs_attr_as(const std::string& key) const;
 
-        vector<string> sysfs_attr_tokens(const string& key) const;
+        std::vector<std::string>
+        sysfs_attr_tokens(const std::string& key) const;
 
 
     private:
@@ -120,9 +142,14 @@ namespace gudev {
     }; // class Device
 
 
-    string to_string(Device::Type t);
+    std::string
+    to_string(Device::Type type);
 
-    std::ostream& operator<<(std::ostream& out, Device::Type t);
+
+    std::ostream&
+    operator <<(std::ostream& out,
+                Device::Type type);
+
 
 } // namespace gudev
 

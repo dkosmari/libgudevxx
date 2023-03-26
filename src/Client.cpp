@@ -14,19 +14,15 @@
 #include "utils.hpp"
 
 
-using std::runtime_error;
-using std::size_t;
-
-
 namespace gudev {
 
 
     namespace {
 
         GUdevClient*
-        make_filter_client(const vector<string>& subsystems)
+        make_filter_client(const std::vector<std::string>& subsystems)
         {
-            vector<const char*> filter;
+            std::vector<const char*> filter;
             for (auto& s : subsystems)
                 filter.push_back(s.c_str());
             filter.push_back(nullptr);
@@ -36,13 +32,13 @@ namespace gudev {
     }
 
     void
-    Client::dispatch_uevent_signal(GUdevClient* client_,
+    Client::dispatch_uevent_signal(GUdevClient* /*client_*/,
                                    gchar*       action_,
                                    GUdevDevice* device_,
                                    gpointer     data)
     {
         Client* client = reinterpret_cast<Client*>(data);
-        string action = action_;
+        std::string action = action_;
         Device device = Device::view(device_);
         client->on_uevent(action, device);
         if (client->uevent_callback)
@@ -57,7 +53,7 @@ namespace gudev {
 
 
     /// Listen events for subsystems
-    Client::Client(const vector<string>& subsystems) :
+    Client::Client(const std::vector<std::string>& subsystems) :
         Base{make_filter_client(subsystems), true}
     {}
 
@@ -83,14 +79,14 @@ namespace gudev {
     /*------------------*/
 
 
-    vector<Device>
-    Client::query(const string& subsystem)
+    std::vector<Device>
+    Client::query(const std::string& subsystem)
     {
         const char* arg = subsystem.empty() ? nullptr : subsystem.c_str();
         GList* list = g_udev_client_query_by_subsystem(gobj(),
                                                        arg);
         auto vec = utils::gobj_list_to_vector<GUdevDevice*>(list);
-        vector<Device> result;
+        std::vector<Device> result;
         for (auto& d : vec)
             result.push_back(Device::own(d));
         return result;
@@ -98,9 +94,9 @@ namespace gudev {
     }
 
 
-    optional<Device>
-    Client::get(const string& subsystem,
-                const string& name)
+    std::optional<Device>
+    Client::get(const std::string& subsystem,
+                const std::string& name)
     {
         auto d = g_udev_client_query_by_subsystem_and_name(gobj(),
                                                            subsystem.c_str(),
@@ -111,9 +107,9 @@ namespace gudev {
     }
 
 
-    optional<Device>
+    std::optional<Device>
     Client::get(GUdevDeviceType type,
-                uint64_t number)
+                std::uint64_t number)
     {
         auto d = g_udev_client_query_by_device_number(gobj(),
                                                       type,
@@ -124,8 +120,8 @@ namespace gudev {
     }
 
 
-    optional<Device>
-    Client::get(const path &device_path)
+    std::optional<Device>
+    Client::get(const std::filesystem::path &device_path)
     {
         auto d = g_udev_client_query_by_device_file(gobj(),
                                                     device_path.c_str());
@@ -135,8 +131,8 @@ namespace gudev {
     }
 
 
-    optional<Device>
-    Client::get_sysfs(const path &sysfs_path)
+    std::optional<Device>
+    Client::get_sysfs(const std::filesystem::path &sysfs_path)
     {
         auto d = g_udev_client_query_by_sysfs_path(gobj(),
                                                    sysfs_path.c_str());
@@ -147,7 +143,7 @@ namespace gudev {
 
 
     void
-    Client::on_uevent(const string& /*action*/,
+    Client::on_uevent(const std::string& /*action*/,
                       const Device& /*device*/)
     {}
 

@@ -15,7 +15,8 @@
 
 namespace gudev {
 
-    opt_string
+
+    std::optional<std::string>
     Device::subsystem() const
     {
         auto r = g_udev_device_get_subsystem(gobj());
@@ -25,7 +26,7 @@ namespace gudev {
     }
 
 
-    opt_string
+    std::optional<std::string>
     Device::devtype() const
     {
         auto r = g_udev_device_get_devtype(gobj());
@@ -35,7 +36,7 @@ namespace gudev {
     }
 
 
-    opt_string
+    std::optional<std::string>
     Device::name() const
     {
         auto r = g_udev_device_get_name(gobj());
@@ -45,7 +46,7 @@ namespace gudev {
     }
 
 
-    opt_string
+    std::optional<std::string>
     Device::number() const
     {
         auto r = g_udev_device_get_number(gobj());
@@ -55,7 +56,7 @@ namespace gudev {
     }
 
 
-    opt_path
+    std::optional<std::filesystem::path>
     Device::sysfs() const
     {
         auto r = g_udev_device_get_sysfs_path(gobj());
@@ -65,7 +66,7 @@ namespace gudev {
     }
 
 
-    opt_string
+    std::optional<std::string>
     Device::driver() const
     {
         auto r = g_udev_device_get_driver(gobj());
@@ -75,7 +76,7 @@ namespace gudev {
     }
 
 
-    opt_string
+    std::optional<std::string>
     Device::action() const
     {
         auto r = g_udev_device_get_action(gobj());
@@ -85,7 +86,7 @@ namespace gudev {
     }
 
 
-    opt_uint64_t
+    std::optional<std::uint64_t>
     Device::seqnum() const
     {
         auto s = g_udev_device_get_seqnum(gobj());
@@ -99,11 +100,11 @@ namespace gudev {
     Device::type() const
     {
         auto t = g_udev_device_get_device_type(gobj());
-        return Type{t};
+        return static_cast<Type>(t);
     }
 
 
-    opt_uint64_t
+    std::optional<std::uint64_t>
     Device::device_number() const
     {
         auto n = g_udev_device_get_device_number(gobj());
@@ -113,7 +114,7 @@ namespace gudev {
     }
 
 
-    opt_path
+    std::optional<std::filesystem::path>
     Device::device_file() const
     {
         auto f = g_udev_device_get_device_file(gobj());
@@ -123,15 +124,15 @@ namespace gudev {
     }
 
 
-    vector<path>
+    std::vector<std::filesystem::path>
     Device::device_symlinks() const
     {
         auto a = g_udev_device_get_device_file_symlinks(gobj());
-        return utils::strv_to_vector<path>(a);
+        return utils::strv_to_vector<std::filesystem::path>(a);
     }
 
 
-    optional<Device>
+    std::optional<Device>
     Device::parent() const
     {
         auto p = g_udev_device_get_parent(gobj());
@@ -141,8 +142,8 @@ namespace gudev {
     }
 
 
-    optional<Device>
-    Device::parent(const string& subsystem) const
+    std::optional<Device>
+    Device::parent(const std::string& subsystem) const
     {
         auto p = g_udev_device_get_parent_with_subsystem(gobj(),
                                                          subsystem.c_str(),
@@ -153,9 +154,9 @@ namespace gudev {
     }
 
 
-    optional<Device>
-    Device::parent(const string& subsystem,
-                   const string& devtype) const
+    std::optional<Device>
+    Device::parent(const std::string& subsystem,
+                   const std::string& devtype) const
     {
         auto p = g_udev_device_get_parent_with_subsystem(gobj(),
                                                          subsystem.c_str(),
@@ -166,7 +167,7 @@ namespace gudev {
     }
 
 
-    vector<string>
+    std::vector<std::string>
     Device::tags() const
     {
         auto t = g_udev_device_get_tags(gobj());
@@ -175,7 +176,7 @@ namespace gudev {
 
 
     bool
-    Device::has_tag(const string& tag) const
+    Device::has_tag(const std::string& tag) const
     {
         auto list = tags();
         return find(list.begin(), list.end(), tag) != list.end();
@@ -189,16 +190,16 @@ namespace gudev {
     }
 
 
-    microseconds
+    std::chrono::microseconds
     Device::since_initialized() const
     {
         auto u = g_udev_device_get_usec_since_initialized(gobj());
-        return microseconds(u);
+        return std::chrono::microseconds{u};
     }
 
 
 
-    vector<string>
+    std::vector<std::string>
     Device::property_keys() const
     {
         auto k = g_udev_device_get_property_keys(gobj());
@@ -207,14 +208,14 @@ namespace gudev {
 
 
     bool
-    Device::has_property(const string& key) const
+    Device::has_property(const std::string& key) const
     {
         return g_udev_device_has_property(gobj(), key.c_str());
     }
 
 
-    opt_string
-    Device::property(const string& key) const
+    std::optional<std::string>
+    Device::property(const std::string& key) const
     {
         auto p = g_udev_device_get_property(gobj(), key.c_str());
         if (p)
@@ -225,15 +226,15 @@ namespace gudev {
 
     template<>
     int
-    Device::property_as<int>(const string& key) const
+    Device::property_as<int>(const std::string& key) const
     {
         return g_udev_device_get_property_as_int(gobj(), key.c_str());
     }
 
 
     template<>
-    uint64_t
-    Device::property_as<uint64_t>(const string& key) const
+    std::uint64_t
+    Device::property_as<std::uint64_t>(const std::string& key) const
     {
         return g_udev_device_get_property_as_uint64(gobj(), key.c_str());
     }
@@ -241,7 +242,7 @@ namespace gudev {
 
     template<>
     double
-    Device::property_as<double>(const string& key) const
+    Device::property_as<double>(const std::string& key) const
     {
         return g_udev_device_get_property_as_double(gobj(), key.c_str());
     }
@@ -249,29 +250,29 @@ namespace gudev {
 
     template<>
     bool
-    Device::property_as<bool>(const string& key) const
+    Device::property_as<bool>(const std::string& key) const
     {
         return g_udev_device_get_property_as_boolean(gobj(), key.c_str());
     }
 
 
     template<>
-    string
-    Device::property_as<string>(const string& key) const
+    std::string
+    Device::property_as<std::string>(const std::string& key) const
     {
         return property(key).value_or("");
     }
 
 
-    vector<string>
-    Device::property_tokens(const string& key) const
+    std::vector<std::string>
+    Device::property_tokens(const std::string& key) const
     {
         auto t = g_udev_device_get_property_as_strv(gobj(), key.c_str());
         return utils::strv_to_vector(t);
     }
 
 
-    vector<string>
+    std::vector<std::string>
     Device::sysfs_attr_keys() const
     {
         auto k = g_udev_device_get_sysfs_attr_keys(gobj());
@@ -280,14 +281,14 @@ namespace gudev {
 
 
     bool
-    Device::has_sysfs_attr(const string& key) const
+    Device::has_sysfs_attr(const std::string& key) const
     {
         return g_udev_device_has_sysfs_attr(gobj(), key.c_str());
     }
 
 
-    opt_string
-    Device::sysfs_attr(const string& key) const
+    std::optional<std::string>
+    Device::sysfs_attr(const std::string& key) const
     {
         auto a = g_udev_device_get_sysfs_attr(gobj(), key.c_str());
         if (a)
@@ -298,15 +299,15 @@ namespace gudev {
 
     template<>
     int
-    Device::sysfs_attr_as<int>(const string& key) const
+    Device::sysfs_attr_as<int>(const std::string& key) const
     {
         return g_udev_device_get_sysfs_attr_as_int(gobj(), key.c_str());
     }
 
 
     template<>
-    uint64_t
-    Device::sysfs_attr_as<uint64_t>(const string& key) const
+    std::uint64_t
+    Device::sysfs_attr_as<uint64_t>(const std::string& key) const
     {
         return g_udev_device_get_sysfs_attr_as_uint64(gobj(), key.c_str());
     }
@@ -314,7 +315,7 @@ namespace gudev {
 
     template<>
     double
-    Device::sysfs_attr_as<double>(const string& key) const
+    Device::sysfs_attr_as<double>(const std::string& key) const
     {
         return g_udev_device_get_sysfs_attr_as_double(gobj(), key.c_str());
     }
@@ -322,22 +323,22 @@ namespace gudev {
 
     template<>
     bool
-    Device::sysfs_attr_as<bool>(const string& key) const
+    Device::sysfs_attr_as<bool>(const std::string& key) const
     {
         return g_udev_device_get_sysfs_attr_as_boolean(gobj(), key.c_str());
     }
 
 
     template<>
-    string
-    Device::sysfs_attr_as<string>(const string& key) const
+    std::string
+    Device::sysfs_attr_as<std::string>(const std::string& key) const
     {
         return sysfs_attr(key).value_or("");
     }
 
 
-    vector<string>
-    Device::sysfs_attr_tokens(const string& key) const
+    std::vector<std::string>
+    Device::sysfs_attr_tokens(const std::string& key) const
     {
         auto t = g_udev_device_get_sysfs_attr_as_strv(gobj(), key.c_str());
         return utils::strv_to_vector(t);
@@ -345,10 +346,10 @@ namespace gudev {
 
 
 
-    string
-    to_string(Device::Type t)
+    std::string
+    to_string(Device::Type type)
     {
-        switch (t) {
+        switch (type) {
             case Device::Type::no_device:
                 return "no device file";
             case Device::Type::block_device:
@@ -362,9 +363,10 @@ namespace gudev {
 
 
     std::ostream&
-    operator<<(std::ostream& out, Device::Type t)
+    operator<<(std::ostream& out,
+               Device::Type type)
     {
-        return out << to_string(t);
+        return out << to_string(type);
     }
 
 
