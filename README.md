@@ -4,9 +4,10 @@ libgudevxx - a C++ wrapper for libgudev
 `libgudevxx` is a C++20 wrapper for `libgudev`, which is a GObject wrapper for `libudev`, which is
 a library for the `udev` Linux kernel subsystem.
 
-This library makes it safer to integrate `libgudev` into GTK+ and gtkmm applications written
-in C++, by using RAII and type safety. Note that this library does not depend on glibmm,
-it provides its own thin wrappers.
+This library makes it safer to integrate `libgudev` into GTK+/GLib and gtkmm/glibmm
+applications written in C++, by using RAII and type safety. Note that this library does
+not depend on glibmm, it comes with its own thin wrapper to convert GLib data types to C++
+types.
 
 
 Usage
