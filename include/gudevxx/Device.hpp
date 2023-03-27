@@ -31,8 +31,8 @@ namespace gudev {
 
     public:
 
-
         using Base = detail::GObjectBase<GUdevDevice, Device>;
+
 
         enum class Type {
             no_device    = G_UDEV_DEVICE_TYPE_NONE,
@@ -77,7 +77,7 @@ namespace gudev {
         device_symlinks() const;
 
         std::optional<Device>
-            parent() const;
+        parent() const;
 
         std::optional<Device>
         parent(const std::string& subsystem) const;
