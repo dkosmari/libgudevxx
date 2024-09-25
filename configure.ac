@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.70])
-AC_INIT([libgudevxx], [0.2.dev], [])
+AC_INIT([libgudevxx], [0.2+], [])
 AC_CONFIG_SRCDIR([src/Client.cpp])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -37,6 +37,9 @@ AC_TYPE_SIZE_T
 AC_TYPE_UINT64_T
 
 # Checks for library functions.
+
+TARBALL_NAME="${PACKAGE_TARNAME}-${PACKAGE_VERSION}.tar.gz"
+AC_SUBST([TARBALL_NAME])
 
 AC_CONFIG_FILES([Makefile
                  include/gudevxx/Makefile

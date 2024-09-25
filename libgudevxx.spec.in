@@ -1,29 +1,49 @@
-Name:           @PACKAGE_NAME@
+%define libname %mklibname gudevxx
+%define devname %mklibname gudevxx -d
+
+Name:           @PACKAGE_TARNAME@
 Version:        @PACKAGE_VERSION@
-Release:        1%{?dist}
+Release:        %mkrel 1
 Summary:        A C++20 wrapper for libgudev
-
+Group:          System/Libraries
 License:        GPLv3
-Source0:        @PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.gz
-
-#BuildRequires:  
-#Requires:       
-
-Group:           System/Libraries
+Source0:        @TARBALL_NAME@
 
 %description
 %{name} is a C++20 wrapper for libgudev
 
+BuildRequires:  automake
+BuildRequires:  libtool
+BuildRequires:  pkgconfig(libgudev)
+BuildRequires:  gcc-c++
 
-%package        devel
-Summary:        Development files for %{name}
-Requires:       %{name}%{?_isa} = %{version}-%{release}
 
+#############
+## library ##
+#############
+
+%package -n     %{libname}
+Summary:        A C++ wrapper for libgudev.
+Group:          System/Libraries
+
+%description -n %{libname}
+This is the library needed to run programs linked with %{libname}.
+
+
+###########
+## devel ##
+###########
+
+%package -n     %{devname}
+Summary:        Development package for %{libname}.
 Group:          Development/C++
+Provides:       %{devname} = %{version}
+Requires:       %{libname} = %{version}-%{release}
 
-%description    devel
-The %{name}-devel package contains libraries and header files for
-developing applications that use %{name}.
+%description -n %{devname}
+This package provides libraries and headers files for %{name}
+development.
+
 
 
 %prep
@@ -36,23 +56,18 @@ developing applications that use %{name}.
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
 %make_install
-find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
 
-%{?ldconfig_scriptlets}
-
-
-%files
+%files -n %{libname}
 %license COPYING
 %doc AUTHORS ChangeLog NEWS
 %{_libdir}/*.so.*
 
 
-%files devel
+%files -n %{devname}
 %doc INSTALL README.md
-%{_includedir}/*
+%{_includedir}/gudevxx/*
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/libgudevxx.pc
 

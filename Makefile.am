@@ -24,7 +24,6 @@ pcfile_DATA = libgudevxx.pc
 
 .PHONY: rpm
 
-TARBALL_NAME = $(PACKAGE_TARNAME)-$(PACKAGE_VERSION).tar.gz
 RPM_TARBALL_NAME = $(HOME)/rpmbuild/SOURCES/$(TARBALL_NAME)
 
 rpm: libgudevxx.spec dist-gzip
