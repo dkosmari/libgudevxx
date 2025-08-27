@@ -22,8 +22,9 @@ libgudevxx_la_SOURCES = \
 libgudevxx_la_LIBADD = $(GUDEV_LIBS)
 
 
-
 .PHONY: company
+company: compile_flags.txt
 
-company: Makefile
-	echo "$(AM_CPPFLAGS) $(CPPFLAGS) $(DEFS)" | xargs -n1 echo | sort -u > compile_flags.txt
+compile_flags.txt: Makefile
+	printf "%s" "$(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS)" | xargs -n1 | sort -u > compile_flags.txt
+	$(CPP) -xc++ /dev/null -E -Wp,-v 2>&1 | sed -n 's,^ ,-I,p' >> compile_flags.txt

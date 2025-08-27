@@ -7,7 +7,7 @@ AM_CPPFLAGS = \
 	$(GUDEV_CFLAGS) \
 	$(GLIBMM_CFLAGS)
 
-LDADD = \
+LIBS = \
 	$(top_builddir)/src/libgudevxx.la \
 	$(GLIBMM_LIBS)
 
@@ -28,6 +28,8 @@ test_enumerator_SOURCES = test-enumerator.cpp
 
 
 .PHONY: company
+company: compile_flags.txt
 
-company: Makefile
-	echo "$(AM_CPPFLAGS) $(CPPFLAGS) $(DEFS)" | xargs -n1 echo | sort -u > compile_flags.txt
+compile_flags.txt: Makefile
+	printf "%s" "$(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS)" | xargs -n1 | sort -u > compile_flags.txt
+	$(CPP) -xc++ /dev/null -E -Wp,-v 2>&1 | sed -n 's,^ ,-I,p' >> compile_flags.txt
