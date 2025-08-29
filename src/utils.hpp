@@ -26,7 +26,7 @@ namespace gudev::utils {
         try  {
             std::vector<T> result;
             for (GList* i = list; i; i = i->next)
-                result.emplace_back(reinterpret_cast<T>(i->data));
+                result.push_back(reinterpret_cast<T>(i->data));
             g_list_free(list);
             return result;
         }

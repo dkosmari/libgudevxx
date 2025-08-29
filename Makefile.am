@@ -16,7 +16,7 @@ gudevxxdir = $(includedir)/gudevxx
 
 gudevxx_HEADERS = \
 	include/gudevxx/Client.hpp \
-	include/gudevxx/GObjectBase.hpp \
+	include/gudevxx/GObjectWrapper.hpp \
 	include/gudevxx/Device.hpp \
 	include/gudevxx/Enumerator.hpp
 

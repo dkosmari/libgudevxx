@@ -8,6 +8,7 @@
 #ifndef LIBGUDEVXX_ENUMERATOR_HPP
 #define LIBGUDEVXX_ENUMERATOR_HPP
 
+#include <cstddef>
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -15,43 +16,56 @@
 #include <gudev/gudev.h>
 
 #include "Client.hpp"
-#include "GObjectBase.hpp"
+#include "GObjectWrapper.hpp"
 
 
 namespace gudev {
 
-    struct Enumerator : detail::GObjectBase<GUdevEnumerator, Enumerator> {
+    struct Enumerator :
+        detail::GObjectWrapper<GUdevEnumerator> {
 
-        using Base = detail::GObjectBase<GUdevEnumerator, Enumerator>;
+        using BaseType = detail::GObjectWrapper<GUdevEnumerator>;
 
+
+        Enumerator(std::nullptr_t)
+            noexcept;
 
         Enumerator(Client& client);
 
 
-        void
+        Enumerator&
         match_subsystem(const std::string& subsystem);
 
-        void nomatch_subsystem(const std::string& subsystem);
+        Enumerator&
+        nomatch_subsystem(const std::string& subsystem);
 
-        void match_sysfs_attr(const std::string& key,
-                              const std::string& val);
+        Enumerator&
+        match_sysfs_attr(const std::string& key,
+                         const std::string& val);
 
-        void nomatch_sysfs_attr(const std::string& key,
-                                const std::string& val);
+        Enumerator&
+        nomatch_sysfs_attr(const std::string& key,
+                           const std::string& val);
 
-        void match_property(const std::string& key,
-                            const std::string& val);
+        Enumerator&
+        match_property(const std::string& key,
+                       const std::string& val);
 
-        void match_name(const std::string& name);
+        Enumerator&
+        match_name(const std::string& name);
 
-        void match_tag(const std::string& tag);
+        Enumerator&
+        match_tag(const std::string& tag);
 
-        void match_initialized();
+        Enumerator&
+        match_initialized();
 
-        void add_sysfs_path(const std::filesystem::path& sysfs_path);
+        Enumerator&
+        add_sysfs_path(const std::filesystem::path& sysfs_path);
 
 
-        std::vector<Device> execute();
+        std::vector<Device>
+        execute();
 
     };
 

@@ -7,9 +7,9 @@
 #include <iostream>
 #include <locale>
 #include <optional>
-#include <sstream>
 #include <string>
 #include <type_traits>
+#include <vector>
 
 #include <glibmm.h>
 
@@ -27,9 +27,7 @@ using std::chrono::seconds;
 using std::cout;
 using std::endl;
 using std::filesystem::path;
-using std::istringstream;
 using std::optional;
-using std::ostringstream;
 using std::string;
 
 using Glib::OptionContext;
@@ -39,26 +37,48 @@ using gudev::Client;
 using gudev::Device;
 
 
-template<typename Rep, typename Ratio>
-string human_time(std::chrono::duration<Rep, Ratio> t)
+template<typename Rep,
+         typename Ratio>
+string
+human_time(std::chrono::duration<Rep, Ratio> t)
 {
-    ostringstream out;
+    string result = std::to_string(t.count());
 
     if (auto u = duration_cast<microseconds>(t); u.count() <= 5000)
-        out << u.count() << " µs";
+        result += " µs";
     else if (auto m = duration_cast<milliseconds>(t); m.count() < 5000)
-        out << m.count() << " ms";
+        result += " ms";
     else if (auto s = duration_cast<seconds>(t); s.count() < 120)
-        out << s.count() << " s";
+        result += " s";
     else if (auto m = duration_cast<minutes>(t); m.count() < 120)
-        out << m.count() << " m";
+        result += " m";
     else
-        out << duration_cast<hours>(t).count() << " h";
-    return out.str();
+        result += " h";
+    return result;
 }
 
 
-void print_device(const Device& dev)
+std::vector<std::string>
+split(const std::string& input,
+      const std::string& delimiter)
+{
+    auto res = g_strsplit(input.data(), delimiter.data(), -1);
+    std::vector<std::string> result;
+    try {
+        for (gchar** strp = res; *strp; ++strp)
+            result.push_back(*strp);
+        g_strfreev(res);
+    }
+    catch (...) {
+        g_strfreev(res);
+        throw;
+    }
+    return result;
+}
+
+
+void
+print_device(const Device& dev)
 {
     const string indent(20, ' ');
     const string indent2(40, ' ');
@@ -75,7 +95,7 @@ void print_device(const Device& dev)
         }
         cout << left << right << "\n";
     };
-    auto printif = [&aprint](const string& label, const auto& val)
+    auto print_opt = [&aprint](const string& label, const auto& val)
     {
         if (val) {
             using T = std::remove_reference_t<
@@ -104,22 +124,22 @@ void print_device(const Device& dev)
     };
 
     cout << "Device:\n";
-    printif("Subsystem: ", dev.subsystem());
-    printif("Devtype: ", dev.devtype());
-    printif("Name: ", dev.name());
-    printif("Number: ", dev.number());
-    printif("SysFS: ", dev.sysfs());
-    printif("Driver: ", dev.driver());
-    printif("Action: ", dev.action());
-    printif("Seqnum: ", dev.seqnum());
-    printif("Device type: ", optional{dev.type()});
-    printif("Device number: ", dev.device_number());
+    print_opt("Subsystem: ", dev.subsystem());
+    print_opt("Devtype: ", dev.devtype());
+    print_opt("Name: ", dev.name());
+    print_opt("Number: ", dev.number());
+    print_opt("SysFS: ", dev.sysfs());
+    print_opt("Driver: ", dev.driver());
+    print_opt("Action: ", dev.action());
+    print_opt("Seqnum: ", dev.seqnum());
+    print_opt("Device type: ", optional{dev.type()});
+    print_opt("Device number: ", dev.device_number());
 
-    if (dev.initialized())
+    if (dev.is_initialized())
         aprint("Initialized: ",
-               human_time(dev.since_initialized()) + " ago");
+               human_time(dev.usec_since_initialized()) + " ago");
 
-    printif("Device file: ", dev.device_file());
+    print_opt("Device file: ", dev.device_file());
 
     if (auto symlinks = dev.device_symlinks(); !symlinks.empty()) {
         aprint("Symlinks: ", "");
@@ -136,13 +156,8 @@ void print_device(const Device& dev)
     // TODO: print with the same syntax as udev
     if (auto pkeys = dev.property_keys(); !pkeys.empty()) {
         aprint("Properties: ");
-        for (const auto& k : pkeys) {
+        for (const auto& k : pkeys)
             aprint2(k, dev.property_as<string>(k));
-            dev.property_as<int>(k);
-            dev.property_as<std::uint64_t>(k);
-            dev.property_as<double>(k);
-            dev.property_as<bool>(k);
-        }
     }
 
     // TODO: print with the same syntax as udev
@@ -155,10 +170,9 @@ void print_device(const Device& dev)
                     aprint2(k, *val);
                 else {
                     aprint2(k, "{");
-                    istringstream input{*val};
-                    string line;
-                    while (getline(input, line))
-                        cout << indent2 << line << "\n";
+                    auto entries = split(*val, "\n");
+                    for (auto& entry : entries)
+                        aprint2("", "    " + entry);
                     aprint2("", "}");
                 }
             } else {
@@ -170,7 +184,9 @@ void print_device(const Device& dev)
 }
 
 
-int main(int argc, char* argv[])
+int
+main(int argc,
+     char* argv[])
 try {
     std::locale::global(std::locale(""));
 
@@ -215,12 +231,6 @@ try {
 
     Client client;
 
-    // {
-    //     Client tmp = std::move(client);
-    //     client = std::move(tmp);
-    // }
-
-
     if (!file.empty()) {
         path dev_path = file.raw();
         auto dev_printer = [show_parents](const Device& d)
@@ -260,13 +270,13 @@ try {
                  << endl;
         return 0;
     }
-
-
 }
+#if !GLIBMM_CHECK_VERSION(2, 68, 0)
 catch (Glib::Exception& e) {
     cerr << e.what() << endl;
     return -2;
 }
+#endif
 catch (std::exception& e) {
     cerr << e.what() << endl;
     return -1;

@@ -38,7 +38,11 @@ AC_ARG_ENABLE([examples],
               [AS_HELP_STRING([--enable-examples], [Enable building example programs.])],
               [ENABLE_EXAMPLES=$enableval])
 AS_VAR_IF([ENABLE_EXAMPLES], [yes],
-          [PKG_CHECK_MODULES([GLIBMM], [glibmm-2.4])])
+          [
+              PKG_CHECK_MODULES([GLIBMM], [glibmm-2.68],
+                                [],
+                                [PKG_CHECK_MODULES([GLIBMM], [glibmm-2.4])])
+          ])
 AM_CONDITIONAL([BUILD_EXAMPLES], [test "x$ENABLE_EXAMPLES" = "xyes"])
 
 

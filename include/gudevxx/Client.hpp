@@ -8,6 +8,7 @@
 #ifndef LIBGUDEVXX_CLIENT_HPP
 #define LIBGUDEVXX_CLIENT_HPP
 
+#include <cstddef>
 #include <cstdint>
 #include <filesystem>
 #include <functional>
@@ -19,24 +20,41 @@
 #include <gudev/gudev.h>
 
 #include "Device.hpp"
-#include "GObjectBase.hpp"
+#include "GObjectWrapper.hpp"
 
 
 namespace gudev {
 
     class Client :
-        public detail::GObjectBase<GUdevClient, Client> {
+        public detail::GObjectWrapper<GUdevClient> {
 
     public:
 
-        using Base = detail::GObjectBase<GUdevClient, Client>;
+        using BaseType = detail::GObjectWrapper<GUdevClient>;
 
 
-        Client(); // don't listen on any subsystem
+        /// Default constructor: don't listen to any events
+        Client();
+
+        /// Construct invalid (null) client.
+        Client(std::nullptr_t)
+            noexcept;
+
+        /// Listen events for subsystems
         Client(const std::vector<std::string>& subsystems);
 
         virtual
         ~Client();
+
+
+        /// Move constructor.
+        Client(Client&& other)
+            noexcept;
+
+        /// Move assignment.
+        Client&
+        operator =(Client&& other)
+            noexcept;
 
 
         // query operations
@@ -50,7 +68,7 @@ namespace gudev {
 
         std::optional<Device>
         get(GUdevDeviceType type,
-            std::uint64_t number);
+            GUdevDeviceNumber number);
 
         std::optional<Device>
         get(const std::filesystem::path& device_path);
@@ -59,17 +77,22 @@ namespace gudev {
         get_sysfs(const std::filesystem::path& sysfs_path);
 
 
-        // callback for "uevent" signal
-        std::function<void (const std::string&,
-                            const Device& device)> uevent_callback;
+        /// Callback for "uevent" signal.
+        std::function<void (const std::string&, Device& device)> uevent_callback;
+
+
+        static
+        Client*
+        get_wrapper(GUdevClient* c)
+            noexcept;
 
     protected:
 
-        // or override this method
+        /// Virtual method for "uevent" signal.
         virtual
         void
         on_uevent(const std::string& action,
-                  const Device& device);
+                  Device& device);
 
     private:
 

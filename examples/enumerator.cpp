@@ -22,7 +22,8 @@ using gudev::Device;
 using gudev::Enumerator;
 
 
-void print(const Device& d)
+void
+print(const Device& d)
 {
     cout << "DEV:  "
          << d.name().value_or("")
@@ -45,7 +46,9 @@ split_keyval(const string& text)
 }
 
 
-void enforce_plus(char type, char op)
+void
+enforce_plus(char type,
+             char op)
 {
     if (op != '+')
         throw runtime_error{"Invalid operation: only '+' is accepted for "s
@@ -53,10 +56,12 @@ void enforce_plus(char type, char op)
 }
 
 
-int   main(int argc, char* argv[])
+// TODO: write a help message for arguments usage.
+int
+main(int argc,
+     char* argv[])
 try {
     Client cli;
-
     Enumerator etor{cli};
 
     for (int i = 1; i < argc; ++i) {
@@ -139,8 +144,7 @@ try {
 
     }
 
-    auto devs = etor.execute();
-    for (auto& d : devs)
+    for (auto& d : etor.execute())
         print(d);
 }
 catch (std::exception& e) {

@@ -19,17 +19,21 @@
 
 #include <gudev/gudev.h>
 
-#include "GObjectBase.hpp"
+#include "GObjectWrapper.hpp"
 
 
 namespace gudev {
 
+    class Client;
+    class Enumerator;
+
+
     class Device :
-        public detail::GObjectBase<GUdevDevice, Device> {
+        public detail::GObjectWrapper<GUdevDevice> {
 
     public:
 
-        using Base = detail::GObjectBase<GUdevDevice, Device>;
+        using BaseType = detail::GObjectWrapper<GUdevDevice>;
 
 
         enum class Type {
@@ -40,102 +44,141 @@ namespace gudev {
 
 
         std::optional<std::string>
-        subsystem() const;
+        subsystem()
+            const;
 
         std::optional<std::string>
-        devtype() const;
+        devtype()
+            const;
 
         std::optional<std::string>
-        name() const;
+        name()
+            const;
 
         std::optional<std::string>
-        number() const;
+        number()
+            const;
 
         std::optional<std::filesystem::path>
-        sysfs() const;
+        sysfs()
+            const;
 
         std::optional<std::string>
-        driver() const;
+        driver()
+            const;
 
         std::optional<std::string>
-        action() const;
+        action()
+            const;
 
         std::optional<std::uint64_t>
-        seqnum() const;
+        seqnum()
+            const;
 
-        Type type() const;
+        Type type()
+            const;
 
         std::optional<std::uint64_t>
-        device_number() const;
+        device_number()
+            const;
 
         std::optional<std::filesystem::path>
-        device_file() const;
+        device_file()
+            const;
 
         std::vector<std::filesystem::path>
-        device_symlinks() const;
+        device_symlinks()
+            const;
 
         std::optional<Device>
-        parent() const;
+        parent()
+            const;
 
         std::optional<Device>
-        parent(const std::string& subsystem) const;
+        parent(const std::string& subsystem)
+            const;
 
         std::optional<Device>
         parent(const std::string& subsystem,
-               const std::string& devtype) const;
+               const std::string& devtype)
+            const;
 
         std::vector<std::string>
-        tags() const;
+        tags()
+            const;
 
         bool
-        has_tag(const std::string& tag) const;
+        has_tag(const std::string& tag)
+            const;
 
         bool
-        initialized() const;
+        is_initialized()
+            const;
 
         std::chrono::microseconds
-        since_initialized() const;
+        usec_since_initialized()
+            const;
 
         std::vector<std::string>
-        property_keys() const;
+        property_keys()
+            const;
 
         bool
-        has_property(const std::string& key) const;
+        has_property(const std::string& key)
+            const;
 
         std::optional<std::string>
-        property(const std::string& key) const;
+        property(const std::string& key)
+            const;
 
         // T = int, uint64_t, double, bool, string
         template<typename T>
         T
-        property_as(const std::string& key) const;
+        property_as(const std::string& key)
+            const;
 
         std::vector<std::string>
-        property_tokens(const std::string& key) const;
+        property_tokens(const std::string& key)
+            const;
 
 
         std::vector<std::string>
-        sysfs_attr_keys() const;
+        sysfs_attr_keys()
+            const;
 
         bool
-        has_sysfs_attr(const std::string& key) const;
+        has_sysfs_attr(const std::string& key)
+            const;
 
         std::optional<std::string>
-        sysfs_attr(const std::string& key) const;
+        sysfs_attr(const std::string& key)
+            const;
 
         // T = int, uint64_t, double, bool, string
         template<typename T>
         T
-        sysfs_attr_as(const std::string& key) const;
+        sysfs_attr_as(const std::string& key)
+            const;
 
         std::vector<std::string>
-        sysfs_attr_tokens(const std::string& key) const;
+        sysfs_attr_tokens(const std::string& key)
+            const;
 
 
-    private:
+        static
+        Device*
+        get_wrapper(GUdevDevice* dev)
+            noexcept;
 
-        using Base::Base;
 
+    protected:
+
+        // Inherit constructors.
+        using BaseType::BaseType;
+
+
+        friend class Client;
+        friend class Enumerator;
 
     }; // class Device
 

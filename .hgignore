@@ -20,10 +20,10 @@ config.h
 config.h.in
 config.status
 configure
+examples/device-info
+examples/enumerator
+examples/listener
 libtool
 Makefile
 Makefile.in
 stamp-h1
-tests/test-device-info
-tests/test-enumerator
-tests/test-listener

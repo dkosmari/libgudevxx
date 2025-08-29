@@ -1,7 +1,7 @@
 /*
  *  libgudevxx - a C++ wrapper for libgudev
- *  Copyright (C) 2021-2023  Daniel K. O.
  *
+ *  Copyright (C) 2025  Daniel K. O.
  *  SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -27,7 +27,6 @@
 #include <chrono>
 #include <iomanip>
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -48,7 +47,6 @@ using std::chrono::minutes;
 using std::chrono::seconds;
 using std::cout;
 using std::endl;
-using std::ostringstream;
 using std::setw;
 using std::string;
 using std::vector;
@@ -58,7 +56,8 @@ using gudev::Client;
 using gudev::Device;
 
 
-gboolean handle_sigint(Glib::MainLoop* loop)
+gboolean
+handle_sigint(Glib::MainLoop* loop)
 {
     cout << "\nCaught Ctrl-C." << endl;
     loop->quit();
@@ -66,47 +65,47 @@ gboolean handle_sigint(Glib::MainLoop* loop)
 }
 
 
-template<typename Rep, typename Ratio>
-string human_time(std::chrono::duration<Rep, Ratio> t)
+template<typename Rep,
+         typename Ratio>
+string
+human_time(std::chrono::duration<Rep, Ratio> t)
 {
-    ostringstream out;
+    string result = std::to_string(t.count());
 
     if (auto u = duration_cast<microseconds>(t); u.count() <= 5000)
-        out << u.count() << " µs";
+        result += " µs";
     else if (auto m = duration_cast<milliseconds>(t); m.count() < 5000)
-        out << m.count() << " ms";
+        result += " ms";
     else if (auto s = duration_cast<seconds>(t); s.count() < 120)
-        out << s.count() << " s";
+        result += " s";
     else if (auto m = duration_cast<minutes>(t); m.count() < 120)
-        out << m.count() << " m";
+        result += " m";
     else
-        out << duration_cast<hours>(t).count() << " h";
-    return out.str();
+        result += " h";
+    return result;
 }
 
 
 string
 to_string(const Device& device)
 {
-    ostringstream output;
+    string result;
 
     if (auto subsystem = device.subsystem())
-        output << *subsystem << " | ";
+        result += *subsystem + " | ";
 
     if (auto name = device.name())
-        output << *name << " | ";
+        result += *name + " | ";
 
     if (auto file = device.device_file())
-        output << file->string() << " | ";
+        result += file->string() + " | ";
     else if (auto sysfs = device.sysfs())
-        output << sysfs->string() << " | ";
+        result += sysfs->string() + " | ";
 
     if (auto seqnum = device.seqnum())
-        output << *seqnum;
-    else
-        output << device.gobj();
+        result += *seqnum;
 
-    return output.str();
+    return result;
 }
 
 
@@ -114,8 +113,10 @@ struct MyClient : Client {
 
     using Client::Client;
 
-    void on_uevent(const string& action,
-                   const Device& device) override
+    void
+    on_uevent(const string& action,
+              Device& device)
+        override
     {
         cout << setw(6) << action
              << " | "
@@ -126,7 +127,9 @@ struct MyClient : Client {
 };
 
 
-int main(int argc, char* argv[])
+int
+main(int argc,
+     char* argv[])
 {
     Glib::init();
 

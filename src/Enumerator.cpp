@@ -12,85 +12,99 @@
 
 namespace gudev {
 
-    Enumerator::Enumerator(Client& client) :
-        Base{g_udev_enumerator_new(client.gobj()), true}
+    Enumerator::Enumerator(std::nullptr_t)
+        noexcept
     {}
 
 
-    void
-    Enumerator::match_subsystem(const std::string &subsystem)
+    Enumerator::Enumerator(Client& client) :
+        BaseType{g_udev_enumerator_new(client.data()), detail::Purpose::adopt}
+    {}
+
+
+    Enumerator&
+    Enumerator::match_subsystem(const std::string& subsystem)
     {
-        g_udev_enumerator_add_match_subsystem(gobj(), subsystem.c_str());
+        g_udev_enumerator_add_match_subsystem(raw, subsystem.data());
+        return *this;
     }
 
 
-    void
-    Enumerator::nomatch_subsystem(const std::string &subsystem)
+    Enumerator&
+    Enumerator::nomatch_subsystem(const std::string& subsystem)
     {
-        g_udev_enumerator_add_nomatch_subsystem(gobj(), subsystem.c_str());
+        g_udev_enumerator_add_nomatch_subsystem(raw, subsystem.data());
+        return *this;
     }
 
 
-    void
-    Enumerator::match_sysfs_attr(const std::string &key,
-                                 const std::string &val)
+    Enumerator&
+    Enumerator::match_sysfs_attr(const std::string& key,
+                                 const std::string& val)
     {
-        g_udev_enumerator_add_match_sysfs_attr(gobj(), key.c_str(), val.c_str());
+        g_udev_enumerator_add_match_sysfs_attr(raw, key.data(), val.data());
+        return *this;
     }
 
 
-    void
-    Enumerator::nomatch_sysfs_attr(const std::string &key,
-                                   const std::string &val)
+    Enumerator&
+    Enumerator::nomatch_sysfs_attr(const std::string& key,
+                                   const std::string& val)
     {
-        g_udev_enumerator_add_nomatch_sysfs_attr(gobj(), key.c_str(), val.c_str());
+        g_udev_enumerator_add_nomatch_sysfs_attr(raw, key.data(), val.data());
+        return *this;
     }
 
 
-    void
-    Enumerator::match_property(const std::string &key,
-                               const std::string &val)
+    Enumerator&
+    Enumerator::match_property(const std::string& key,
+                               const std::string& val)
     {
-        g_udev_enumerator_add_match_property(gobj(), key.c_str(), val.c_str());
+        g_udev_enumerator_add_match_property(raw, key.data(), val.data());
+        return *this;
     }
 
 
-    void
-    Enumerator::match_name(const std::string &name)
+    Enumerator&
+    Enumerator::match_name(const std::string& name)
     {
-        g_udev_enumerator_add_match_name(gobj(), name.c_str());
+        g_udev_enumerator_add_match_name(raw, name.data());
+        return *this;
     }
 
 
-    void
-    Enumerator::match_tag(const std::string &tag)
+    Enumerator&
+    Enumerator::match_tag(const std::string& tag)
     {
-        g_udev_enumerator_add_match_tag(gobj(), tag.c_str());
+        g_udev_enumerator_add_match_tag(raw, tag.data());
+        return *this;
     }
 
 
-    void
+    Enumerator&
     Enumerator::match_initialized()
     {
-        g_udev_enumerator_add_match_is_initialized(gobj());
+        g_udev_enumerator_add_match_is_initialized(raw);
+        return *this;
     }
 
 
-    void
-    Enumerator::add_sysfs_path(const std::filesystem::path &sysfs_path)
+    Enumerator&
+    Enumerator::add_sysfs_path(const std::filesystem::path& sysfs_path)
     {
-        g_udev_enumerator_add_sysfs_path(gobj(), sysfs_path.c_str());
+        g_udev_enumerator_add_sysfs_path(raw, sysfs_path.c_str());
+        return *this;
     }
 
 
     std::vector<Device>
     Enumerator::execute()
     {
-        GList* list = g_udev_enumerator_execute(gobj());
+        GList* list = g_udev_enumerator_execute(raw);
         auto devs = utils::gobj_list_to_vector<GUdevDevice*>(list);
         std::vector<Device> result;
         for (auto& d : devs)
-            result.push_back(Device::own(d));
+            result.push_back(Device{d, detail::Purpose::adopt});
         return result;
     }
 
