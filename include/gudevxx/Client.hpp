@@ -1,14 +1,12 @@
 /*
  *  libgudevxx - a C++ wrapper for libgudev
- *  Copyright (C) 2021-2023  Daniel K. O.
  *
+ *  Copyright (C) 2025  Daniel K. O.
  *  SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-
 #ifndef LIBGUDEVXX_CLIENT_HPP
 #define LIBGUDEVXX_CLIENT_HPP
-
 
 #include <cstdint>
 #include <filesystem>
@@ -21,11 +19,10 @@
 #include <gudev/gudev.h>
 
 #include "Device.hpp"
-#include "detail/GObjectBase.hpp"
+#include "GObjectBase.hpp"
 
 
 namespace gudev {
-
 
     class Client :
         public detail::GObjectBase<GUdevClient, Client> {
@@ -66,7 +63,6 @@ namespace gudev {
         std::function<void (const std::string&,
                             const Device& device)> uevent_callback;
 
-
     protected:
 
         // or override this method
@@ -75,12 +71,12 @@ namespace gudev {
         on_uevent(const std::string& action,
                   const Device& device);
 
-
     private:
 
         gulong uevent_handler = connect_uevent();
 
-        gulong connect_uevent();
+        gulong
+        connect_uevent();
 
         static
         void
@@ -89,9 +85,7 @@ namespace gudev {
                                GUdevDevice* device_,
                                gpointer     data);
 
-
     }; // class Client
-
 
 } // namespace gudev
 

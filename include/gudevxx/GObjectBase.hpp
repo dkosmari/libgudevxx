@@ -1,10 +1,9 @@
 /*
  *  libgudevxx - a C++ wrapper for libgudev
- *  Copyright (C) 2021-2023  Daniel K. O.
  *
+ *  Copyright (C) 2025  Daniel K. O.
  *  SPDX-License-Identifier: GPL-3.0-or-later
  */
-
 
 #ifndef LIBGUDEVXX_GOBJECT_BASE_HPP
 #define LIBGUDEVXX_GOBJECT_BASE_HPP
@@ -21,8 +20,7 @@ namespace gudev::detail {
     
     template<typename CType,
              typename Derived>
-    class GObjectBase {
-        
+    class GObjectBase {        
 
         struct Deleter {
             void operator ()(CType* obj) const

@@ -215,6 +215,11 @@ try {
 
     Client client;
 
+    // {
+    //     Client tmp = std::move(client);
+    //     client = std::move(tmp);
+    // }
+
 
     if (!file.empty()) {
         path dev_path = file.raw();

@@ -8,7 +8,7 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 
-AM_INIT_AUTOMAKE([foreign])
+AM_INIT_AUTOMAKE([foreign subdir-objects])
 LT_INIT
 
 # Checks for programs.
@@ -26,26 +26,28 @@ AX_APPEND_COMPILE_FLAGS([-std=c++20], [CXX])
 
 PKG_INSTALLDIR
 
-# Checks for libraries.
 PKG_CHECK_MODULES([GUDEV], [gudev-1.0])
-PKG_CHECK_MODULES([GLIBMM], [glibmm-2.4])
 
-# Checks for header files.
 
-# Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
 AC_TYPE_UINT64_T
 
-# Checks for library functions.
+
+ENABLE_TESTS=yes
+AC_ARG_ENABLE([tests],
+              [AS_HELP_STRING([--disable-tests], [Disable building test programs.])],
+              [ENABLE_TESTS=$enableval])
+AS_VAR_IF([ENABLE_TESTS], [yes],
+          [PKG_CHECK_MODULES([GLIBMM], [glibmm-2.4])])
+AM_CONDITIONAL([BUILD_TESTS], [test "x$ENABLE_TESTS" = "xyes"])
+
 
 TARBALL_NAME="${PACKAGE_TARNAME}-${PACKAGE_VERSION}.tar.gz"
 AC_SUBST([TARBALL_NAME])
 
+
 AC_CONFIG_FILES([Makefile
-                 include/gudevxx/Makefile
-                 libgudevxx.pc
-                 libgudevxx.spec
-                 src/Makefile
                  tests/Makefile
-])
+                 libgudevxx.pc
+                 libgudevxx.spec])
 AC_OUTPUT

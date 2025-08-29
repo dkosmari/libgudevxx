@@ -1,14 +1,12 @@
 /*
  *  libgudevxx - a C++ wrapper for libgudev
- *  Copyright (C) 2021-2023  Daniel K. O.
  *
+ *  Copyright (C) 2025  Daniel K. O.
  *  SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-
 #ifndef LIBGUDEVXX_ENUMERATOR_HPP
 #define LIBGUDEVXX_ENUMERATOR_HPP
-
 
 #include <filesystem>
 #include <string>
@@ -17,11 +15,10 @@
 #include <gudev/gudev.h>
 
 #include "Client.hpp"
-#include "detail/GObjectBase.hpp"
+#include "GObjectBase.hpp"
 
 
 namespace gudev {
-
 
     struct Enumerator : detail::GObjectBase<GUdevEnumerator, Enumerator> {
 
@@ -58,7 +55,6 @@ namespace gudev {
 
     };
 
-
-}
+} // namespace gudev
 
 #endif

@@ -1,10 +1,9 @@
 /*
  *  libgudevxx - a C++ wrapper for libgudev
- *  Copyright (C) 2021-2023  Daniel K. O.
  *
+ *  Copyright (C) 2025  Daniel K. O.
  *  SPDX-License-Identifier: GPL-3.0-or-later
  */
-
 
 #include "gudevxx/Enumerator.hpp"
 
@@ -12,7 +11,6 @@
 
 
 namespace gudev {
-
 
     Enumerator::Enumerator(Client& client) :
         Base{g_udev_enumerator_new(client.gobj()), true}
@@ -95,6 +93,5 @@ namespace gudev {
             result.push_back(Device::own(d));
         return result;
     }
-
 
 } // namespace gudev
