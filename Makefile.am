@@ -9,7 +9,7 @@ EXTRA_DIST = \
 	README.md
 
 
-SUBDIRS = . tests
+SUBDIRS = . examples
 
 
 gudevxxdir = $(includedir)/gudevxx

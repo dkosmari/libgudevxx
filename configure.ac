@@ -33,13 +33,13 @@ AC_TYPE_SIZE_T
 AC_TYPE_UINT64_T
 
 
-ENABLE_TESTS=yes
-AC_ARG_ENABLE([tests],
-              [AS_HELP_STRING([--disable-tests], [Disable building test programs.])],
-              [ENABLE_TESTS=$enableval])
-AS_VAR_IF([ENABLE_TESTS], [yes],
+ENABLE_EXAMPLES=no
+AC_ARG_ENABLE([examples],
+              [AS_HELP_STRING([--enable-examples], [Enable building example programs.])],
+              [ENABLE_EXAMPLES=$enableval])
+AS_VAR_IF([ENABLE_EXAMPLES], [yes],
           [PKG_CHECK_MODULES([GLIBMM], [glibmm-2.4])])
-AM_CONDITIONAL([BUILD_TESTS], [test "x$ENABLE_TESTS" = "xyes"])
+AM_CONDITIONAL([BUILD_EXAMPLES], [test "x$ENABLE_EXAMPLES" = "xyes"])
 
 
 TARBALL_NAME="${PACKAGE_TARNAME}-${PACKAGE_VERSION}.tar.gz"
@@ -47,7 +47,7 @@ AC_SUBST([TARBALL_NAME])
 
 
 AC_CONFIG_FILES([Makefile
-                 tests/Makefile
+                 examples/Makefile
                  libgudevxx.pc
                  libgudevxx.spec])
 AC_OUTPUT

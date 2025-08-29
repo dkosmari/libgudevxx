@@ -1,6 +1,9 @@
-# tests/Makefile.am
+# examples/Makefile.am
 
-if BUILD_TESTS
+AM_DEFAULT_SOURCE_EXT = .cpp
+
+
+if BUILD_EXAMPLES
 
 
 AM_CXXFLAGS = -Wall -Wextra
@@ -23,11 +26,7 @@ noinst_PROGRAMS = \
 	listener
 
 
-device_info_SOURCES = device-info.cpp
-
-enumerator_SOURCES = enumerator.cpp
-
-listener_SOURCES = listener.cpp
+endif BUILD_EXAMPLES
 
 
 .PHONY: company
@@ -37,5 +36,3 @@ compile_flags.txt: Makefile
 	printf "%s" "$(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS)" | xargs -n1 | sort -u > compile_flags.txt
 	$(CPP) -xc++ /dev/null -E -Wp,-v 2>&1 | sed -n 's,^ ,-I,p' >> compile_flags.txt
 
-
-endif BUILD_TESTS

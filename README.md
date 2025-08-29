@@ -47,8 +47,7 @@ flags:
 Examples
 --------
 
-There's no short example to embed here yet. Check out the [tests](tests) directory for
-sample use cases.
+There's no short example to embed here yet. Check out the [examples](examples) directory.
 
 
 Installing
