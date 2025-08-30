@@ -133,6 +133,6 @@ namespace gudev::detail {
 
     }; // class basic_wrapper
 
-} // namespace detail
+} // namespace gudev::detail
 
 #endif
