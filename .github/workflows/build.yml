@@ -8,18 +8,27 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v5
-    - name: bootstrap
-      run: ./bootstrap
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+
+      - uses: actions/checkout@v5
+
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: doxygen libgudev-1.0-dev libglibmm-2.68-dev
+
+      - name: bootstrap
+        run: ./bootstrap
+
+      - name: configure
+        run: ./configure
+
+      - name: make
+        run: make
+
+      - name: make check
+        run: make check
+
+      - name: make distcheck
+        run: make distcheck
