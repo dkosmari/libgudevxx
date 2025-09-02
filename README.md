@@ -1,5 +1,8 @@
 # libgudevxx - a C++ wrapper for libgudev
 
+![build status](https://github.com/dkosmari/libgudevxx/actions/workflows/build.yml/badge.svg)
+
+
 `libgudevxx` is a C++20 wrapper for `libgudev`, which is a GObject wrapper for `libudev`, which is
 a library for the `udev` Linux kernel subsystem.
 
