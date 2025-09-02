@@ -1,8 +1,8 @@
 /*
- *  libgudevxx - a C++ wrapper for libgudev
- *  Copyright (C) 2025  Daniel K. O.
+ * libgudevxx - a C++ wrapper for libgudev
  *
- *  SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2025  Daniel K. O.
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #ifndef LIBGUDEVXX_DEVICE_HPP
@@ -10,6 +10,7 @@
 
 #include <chrono>
 #include <concepts>
+#include <cstddef>
 #include <cstdint>
 #include <filesystem>
 #include <iosfwd>
@@ -34,6 +35,20 @@ namespace gudev {
     public:
 
         using BaseType = detail::GObjectWrapper<GUdevDevice>;
+
+
+        Device(nullptr_t n = nullptr)
+            noexcept;
+
+
+        /// Move constructor.
+        Device(Device&& other)
+            noexcept;
+
+        /// Move assignment.
+        Device&
+        operator =(Device&& other)
+            noexcept;
 
 
         enum class Type {
@@ -75,7 +90,8 @@ namespace gudev {
         seqnum()
             const;
 
-        Type type()
+        Type
+        type()
             const;
 
         std::optional<std::uint64_t>
@@ -171,14 +187,21 @@ namespace gudev {
             noexcept;
 
 
-    protected:
+        static
+        Device
+        make_alias(GUdevDevice* dev)
+            noexcept;
+
+
+        static
+        Device
+        make_owner(GUdevDevice* dev)
+            noexcept;
+
+    private:
 
         // Inherit constructors.
         using BaseType::BaseType;
-
-
-        friend class Client;
-        friend class Enumerator;
 
     }; // class Device
 

@@ -1,8 +1,8 @@
 /*
- *  libgudevxx - a C++ wrapper for libgudev
+ * libgudevxx - a C++ wrapper for libgudev
  *
- *  Copyright (C) 2025  Daniel K. O.
- *  SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2025  Daniel K. O.
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #include <algorithm>
@@ -14,11 +14,26 @@
 
 namespace gudev {
 
+
+    Device::Device(nullptr_t)
+        noexcept
+    {}
+
+
+    Device::Device(Device&& other)
+        noexcept = default;
+
+
+    Device&
+    Device::operator =(Device&& other)
+        noexcept = default;
+
+
     std::optional<std::string>
     Device::subsystem()
         const
     {
-        auto r = g_udev_device_get_subsystem(data());
+        auto r = g_udev_device_get_subsystem(raw);
         if (r)
             return r;
         return {};
@@ -29,7 +44,7 @@ namespace gudev {
     Device::devtype()
         const
     {
-        auto r = g_udev_device_get_devtype(data());
+        auto r = g_udev_device_get_devtype(raw);
         if (r)
             return r;
         return {};
@@ -40,7 +55,7 @@ namespace gudev {
     Device::name()
         const
     {
-        auto r = g_udev_device_get_name(data());
+        auto r = g_udev_device_get_name(raw);
         if (r)
             return r;
         return {};
@@ -51,7 +66,7 @@ namespace gudev {
     Device::number()
         const
     {
-        auto r = g_udev_device_get_number(data());
+        auto r = g_udev_device_get_number(raw);
         if (r)
             return r;
         return {};
@@ -62,7 +77,7 @@ namespace gudev {
     Device::sysfs()
         const
     {
-        auto r = g_udev_device_get_sysfs_path(data());
+        auto r = g_udev_device_get_sysfs_path(raw);
         if (r)
             return r;
         return {};
@@ -73,7 +88,7 @@ namespace gudev {
     Device::driver()
         const
     {
-        auto r = g_udev_device_get_driver(data());
+        auto r = g_udev_device_get_driver(raw);
         if (r)
             return r;
         return {};
@@ -84,7 +99,7 @@ namespace gudev {
     Device::action()
         const
     {
-        auto r = g_udev_device_get_action(data());
+        auto r = g_udev_device_get_action(raw);
         if (r)
             return r;
         return {};
@@ -95,7 +110,7 @@ namespace gudev {
     Device::seqnum()
         const
     {
-        auto s = g_udev_device_get_seqnum(data());
+        auto s = g_udev_device_get_seqnum(raw);
         if (s)
             return s;
         return {};
@@ -106,7 +121,7 @@ namespace gudev {
     Device::type()
         const
     {
-        auto t = g_udev_device_get_device_type(data());
+        auto t = g_udev_device_get_device_type(raw);
         return static_cast<Type>(t);
     }
 
@@ -115,7 +130,7 @@ namespace gudev {
     Device::device_number()
         const
     {
-        auto n = g_udev_device_get_device_number(data());
+        auto n = g_udev_device_get_device_number(raw);
         if (n)
             return n;
         return {};
@@ -126,7 +141,7 @@ namespace gudev {
     Device::device_file()
         const
     {
-        auto f = g_udev_device_get_device_file(data());
+        auto f = g_udev_device_get_device_file(raw);
         if (f)
             return f;
         return {};
@@ -137,7 +152,7 @@ namespace gudev {
     Device::device_symlinks()
         const
     {
-        auto a = g_udev_device_get_device_file_symlinks(data());
+        auto a = g_udev_device_get_device_file_symlinks(raw);
         return utils::strv_to_vector<std::filesystem::path>(a);
     }
 
@@ -146,10 +161,10 @@ namespace gudev {
     Device::parent()
         const
     {
-        auto p = g_udev_device_get_parent(data());
+        auto p = g_udev_device_get_parent(raw);
         if (!p)
             return {};
-        return Device{p, detail::Purpose::adopt};
+        return Device{p};
     }
 
 
@@ -157,12 +172,12 @@ namespace gudev {
     Device::parent(const std::string& subsystem)
         const
     {
-        auto p = g_udev_device_get_parent_with_subsystem(data(),
+        auto p = g_udev_device_get_parent_with_subsystem(raw,
                                                          subsystem.c_str(),
                                                          nullptr);
         if (!p)
             return {};
-        return Device{p, detail::Purpose::adopt};
+        return Device{p};
     }
 
 
@@ -171,12 +186,12 @@ namespace gudev {
                    const std::string& devtype)
         const
     {
-        auto p = g_udev_device_get_parent_with_subsystem(data(),
+        auto p = g_udev_device_get_parent_with_subsystem(raw,
                                                          subsystem.c_str(),
                                                          devtype.c_str());
         if (!p)
             return {};
-        return Device{p, detail::Purpose::adopt};
+        return Device{p};
     }
 
 
@@ -184,7 +199,7 @@ namespace gudev {
     Device::tags()
         const
     {
-        auto t = g_udev_device_get_tags(data());
+        auto t = g_udev_device_get_tags(raw);
         return utils::strv_to_vector(t);
     }
 
@@ -202,7 +217,7 @@ namespace gudev {
     Device::is_initialized()
         const
     {
-        return g_udev_device_get_is_initialized(data());
+        return g_udev_device_get_is_initialized(raw);
     }
 
 
@@ -210,17 +225,16 @@ namespace gudev {
     Device::usec_since_initialized()
         const
     {
-        auto u = g_udev_device_get_usec_since_initialized(data());
+        auto u = g_udev_device_get_usec_since_initialized(raw);
         return std::chrono::microseconds{u};
     }
-
 
 
     std::vector<std::string>
     Device::property_keys()
         const
     {
-        auto k = g_udev_device_get_property_keys(data());
+        auto k = g_udev_device_get_property_keys(raw);
         return utils::strv_to_vector(k);
     }
 
@@ -229,7 +243,7 @@ namespace gudev {
     Device::has_property(const std::string& key)
         const
     {
-        return g_udev_device_has_property(data(), key.c_str());
+        return g_udev_device_has_property(raw, key.c_str());
     }
 
 
@@ -237,7 +251,7 @@ namespace gudev {
     Device::property(const std::string& key)
         const
     {
-        auto p = g_udev_device_get_property(data(), key.c_str());
+        auto p = g_udev_device_get_property(raw, key.c_str());
         if (p)
             return p;
         return {};
@@ -249,7 +263,7 @@ namespace gudev {
     Device::property_as<int>(const std::string& key)
         const
     {
-        return g_udev_device_get_property_as_int(data(), key.c_str());
+        return g_udev_device_get_property_as_int(raw, key.c_str());
     }
 
 
@@ -258,7 +272,7 @@ namespace gudev {
     Device::property_as<std::uint64_t>(const std::string& key)
         const
     {
-        return g_udev_device_get_property_as_uint64(data(), key.c_str());
+        return g_udev_device_get_property_as_uint64(raw, key.c_str());
     }
 
 
@@ -267,7 +281,7 @@ namespace gudev {
     Device::property_as<double>(const std::string& key)
         const
     {
-        return g_udev_device_get_property_as_double(data(), key.c_str());
+        return g_udev_device_get_property_as_double(raw, key.c_str());
     }
 
 
@@ -276,7 +290,7 @@ namespace gudev {
     Device::property_as<bool>(const std::string& key)
         const
     {
-        return g_udev_device_get_property_as_boolean(data(), key.c_str());
+        return g_udev_device_get_property_as_boolean(raw, key.c_str());
     }
 
 
@@ -293,7 +307,7 @@ namespace gudev {
     Device::property_tokens(const std::string& key)
         const
     {
-        auto t = g_udev_device_get_property_as_strv(data(), key.c_str());
+        auto t = g_udev_device_get_property_as_strv(raw, key.c_str());
         return utils::strv_to_vector(t);
     }
 
@@ -302,7 +316,7 @@ namespace gudev {
     Device::sysfs_attr_keys()
         const
     {
-        auto k = g_udev_device_get_sysfs_attr_keys(data());
+        auto k = g_udev_device_get_sysfs_attr_keys(raw);
         return utils::strv_to_vector(k);
     }
 
@@ -311,7 +325,7 @@ namespace gudev {
     Device::has_sysfs_attr(const std::string& key)
         const
     {
-        return g_udev_device_has_sysfs_attr(data(), key.c_str());
+        return g_udev_device_has_sysfs_attr(raw, key.c_str());
     }
 
 
@@ -319,7 +333,7 @@ namespace gudev {
     Device::sysfs_attr(const std::string& key)
         const
     {
-        auto a = g_udev_device_get_sysfs_attr(data(), key.c_str());
+        auto a = g_udev_device_get_sysfs_attr(raw, key.c_str());
         if (a)
             return a;
         return {};
@@ -331,7 +345,7 @@ namespace gudev {
     Device::sysfs_attr_as<int>(const std::string& key)
         const
     {
-        return g_udev_device_get_sysfs_attr_as_int(data(), key.c_str());
+        return g_udev_device_get_sysfs_attr_as_int(raw, key.c_str());
     }
 
 
@@ -340,7 +354,7 @@ namespace gudev {
     Device::sysfs_attr_as<uint64_t>(const std::string& key)
         const
     {
-        return g_udev_device_get_sysfs_attr_as_uint64(data(), key.c_str());
+        return g_udev_device_get_sysfs_attr_as_uint64(raw, key.c_str());
     }
 
 
@@ -349,7 +363,7 @@ namespace gudev {
     Device::sysfs_attr_as<double>(const std::string& key)
         const
     {
-        return g_udev_device_get_sysfs_attr_as_double(data(), key.c_str());
+        return g_udev_device_get_sysfs_attr_as_double(raw, key.c_str());
     }
 
 
@@ -358,7 +372,7 @@ namespace gudev {
     Device::sysfs_attr_as<bool>(const std::string& key)
         const
     {
-        return g_udev_device_get_sysfs_attr_as_boolean(data(), key.c_str());
+        return g_udev_device_get_sysfs_attr_as_boolean(raw, key.c_str());
     }
 
 
@@ -375,7 +389,7 @@ namespace gudev {
     Device::sysfs_attr_tokens(const std::string& key)
         const
     {
-        auto t = g_udev_device_get_sysfs_attr_as_strv(data(), key.c_str());
+        auto t = g_udev_device_get_sysfs_attr_as_strv(raw, key.c_str());
         return utils::strv_to_vector(t);
     }
 
@@ -385,6 +399,24 @@ namespace gudev {
         noexcept
     {
         return BaseType::get_wrapper<Device>(dev);
+    }
+
+
+    Device
+    Device::make_alias(GUdevDevice* dev)
+        noexcept
+    {
+        Device result{nullptr};
+        result.alias(dev);
+        return result;
+    }
+
+
+    Device
+    Device::make_owner(GUdevDevice* dev)
+        noexcept
+    {
+        return Device{dev};
     }
 
 

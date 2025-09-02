@@ -1,8 +1,8 @@
 /*
- *  libgudevxx - a C++ wrapper for libgudev
+ * libgudevxx - a C++ wrapper for libgudev
  *
- *  Copyright (C) 2025  Daniel K. O.
- *  SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2025  Daniel K. O.
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #ifndef LIBGUDEVXX_CLIENT_HPP
@@ -15,6 +15,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include <gudev/gudev.h>
@@ -28,10 +29,9 @@ namespace gudev {
     class Client :
         public detail::GObjectWrapper<GUdevClient> {
 
-    public:
-
         using BaseType = detail::GObjectWrapper<GUdevClient>;
 
+    public:
 
         /// Default constructor: don't listen to any events
         Client();
@@ -43,8 +43,17 @@ namespace gudev {
         /// Listen events for subsystems
         Client(const std::vector<std::string>& subsystems);
 
-        virtual
-        ~Client();
+
+        void
+        create();
+
+        void
+        create(const std::vector<std::string>& subsystems);
+
+
+        void
+        destroy()
+            noexcept override;
 
 
         /// Move constructor.
@@ -83,8 +92,21 @@ namespace gudev {
 
         static
         Client*
-        get_wrapper(GUdevClient* c)
+        get_wrapper(GUdevClient* cli)
             noexcept;
+
+
+        static
+        Client
+        make_alias(GUdevClient* cli)
+            noexcept;
+
+
+        static
+        Client
+        make_owner(GUdevClient* cli)
+            noexcept;
+
 
     protected:
 
@@ -96,17 +118,26 @@ namespace gudev {
 
     private:
 
-        gulong uevent_handler = connect_uevent();
+        // Inherit constructors.
+        using BaseType::BaseType;
 
-        gulong
-        connect_uevent();
+
+        void
+        connect_uevent_handler()
+            noexcept;
+
+        void
+        disconnect_uevent_handler()
+            noexcept;
+
 
         static
         void
-        dispatch_uevent_signal(GUdevClient* client_,
-                               gchar*       action_,
-                               GUdevDevice* device_,
-                               gpointer     data);
+        dispatch_uevent_signal(GUdevClient* cli,
+                               gchar*       act,
+                               GUdevDevice* dev,
+                               gpointer     data)
+            noexcept;
 
     }; // class Client
 

@@ -1,14 +1,12 @@
 /*
- *  libgudevxx - a C++ wrapper for libgudev
- *  Copyright (C) 2021-2023  Daniel K. O.
+ * libgudevxx - a C++ wrapper for libgudev
  *
- *  SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2025  Daniel K. O.
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
-
 
 #ifndef LIBGUDEVXX_UTILS_HPP
 #define LIBGUDEVXX_UTILS_HPP
-
 
 #include <cstddef>
 #include <vector>
@@ -17,7 +15,6 @@
 
 
 namespace gudev::utils {
-
 
     template<typename T>
     std::vector<T>
@@ -50,8 +47,6 @@ namespace gudev::utils {
         return result;
     }
 
-
 } // namespace gudev::utils
-
 
 #endif

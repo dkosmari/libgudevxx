@@ -4,6 +4,7 @@
 
 #include <chrono>
 #include <filesystem>
+#include <iomanip>
 #include <iostream>
 #include <locale>
 #include <optional>
@@ -18,17 +19,14 @@
 
 
 using std::cerr;
-using std::chrono::duration_cast;
-using std::chrono::hours;
-using std::chrono::microseconds;
-using std::chrono::milliseconds;
-using std::chrono::minutes;
-using std::chrono::seconds;
 using std::cout;
 using std::endl;
 using std::filesystem::path;
 using std::optional;
+using std::setw;
 using std::string;
+
+using namespace std::literals;
 
 using Glib::OptionContext;
 using Glib::OptionGroup;
@@ -42,19 +40,20 @@ template<typename Rep,
 string
 human_time(std::chrono::duration<Rep, Ratio> t)
 {
-    string result = std::to_string(t.count());
+    using std::to_string;
+    using namespace std::chrono;
 
-    if (auto u = duration_cast<microseconds>(t); u.count() <= 5000)
-        result += " µs";
-    else if (auto m = duration_cast<milliseconds>(t); m.count() < 5000)
-        result += " ms";
-    else if (auto s = duration_cast<seconds>(t); s.count() < 120)
-        result += " s";
-    else if (auto m = duration_cast<minutes>(t); m.count() < 120)
-        result += " m";
-    else
-        result += " h";
-    return result;
+    if (t < 5000us)
+        return to_string(duration_cast<microseconds>(t).count()) + " µs";
+    if (t < 5000ms)
+        return to_string(duration_cast<milliseconds>(t).count()) + " ms";
+    if (t < 120s)
+        return to_string(duration_cast<seconds>(t).count()) + " s";
+    if (t < 120min)
+        return to_string(duration_cast<minutes>(t).count()) + " min";
+    if (t < 48h)
+        return to_string(duration_cast<hours>(t).count()) + " h";
+    return to_string(duration_cast<days>(t).count()) + " d";
 }
 
 
@@ -196,7 +195,8 @@ try {
     Glib::ustring file;
     bool show_parents = false;
 
-    OptionContext ctx;
+    OptionContext opt_ctx;
+    opt_ctx.set_ignore_unknown_options(false);
 
     OptionGroup grp{"options", "Main options"};
 
@@ -220,14 +220,21 @@ try {
     par_opt.set_description("Show parent devices.");
     grp.add_entry(par_opt, show_parents);
 
-    ctx.set_main_group(grp);
+    opt_ctx.set_main_group(grp);
 
 
-    if (!ctx.parse(argc, argv)) {
+    if (!opt_ctx.parse(argc, argv)) {
         cerr << "Unable to parse options." << endl;
         return -1;
     }
 
+    if (argc > 1) {
+        // Leftover arguments, treat as an error.
+        for (int i = 1; i < argc; ++i)
+            cout << "Unknown argument: " << argv[i] << "\n";
+        cout << opt_ctx.get_help() << endl;
+        return -1;
+    }
 
     Client client;
 
@@ -253,16 +260,13 @@ try {
         }
 
         return 0;
-    }
-
-
-    // no remaining arguments, so just list all devices
-    if (argc == 1) {
+    } else {
+        // no remaining arguments, so just list all devices
         auto devices = client.query(subsystem);
         for (auto& d : devices)
             cout << d.subsystem().value_or("")
                  << " : "
-                 << d.device_number().value_or(0)
+                 << setw(5) << d.device_number().value_or(0)
                  << " : "
                  << d.device_file().value_or("").string()
                  << " : "

@@ -1,8 +1,8 @@
 /*
- *  libgudevxx - a C++ wrapper for libgudev
+ * libgudevxx - a C++ wrapper for libgudev
  *
- *  Copyright (C) 2025  Daniel K. O.
- *  SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2025  Daniel K. O.
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #ifndef LIBGUDEVXX_GOBJECT_WRAPPER_HPP
@@ -19,12 +19,6 @@
 
 namespace gudev::detail {
 
-    enum class Purpose {
-        adopt, // take ownership and unref on destructor
-        view, // for temporary objects, don't change ref count
-    };
-
-
     template<typename CType>
     class GObjectWrapper :
         public basic_wrapper<CType*> {
@@ -35,6 +29,7 @@ namespace gudev::detail {
 
         void
         set_wrapper()
+            noexcept
         {
             if (!this->is_valid())
                 return;
@@ -47,6 +42,7 @@ namespace gudev::detail {
 
         void
         unset_wrapper()
+            noexcept
         {
             if (!this->is_valid())
                 return;
@@ -60,6 +56,7 @@ namespace gudev::detail {
 
         void
         ref()
+            noexcept
         {
             if (this->is_valid())
                 g_object_ref(this->raw);
@@ -72,12 +69,9 @@ namespace gudev::detail {
         using BaseType::BaseType;
 
 
-        GObjectWrapper(CType* obj,
-                       Purpose purp) :
+        GObjectWrapper(CType* obj) :
             BaseType{obj}
         {
-            if (purp != Purpose::adopt)
-                this->ref();
             this->set_wrapper();
         }
 
@@ -93,7 +87,7 @@ namespace gudev::detail {
         GObjectWrapper(GObjectWrapper&& other)
             noexcept
         {
-            this->acquire(other.release(), Purpose::adopt);
+            this->acquire(other.release());
         }
 
 
@@ -104,7 +98,7 @@ namespace gudev::detail {
         {
             if (this != &other) {
                 this->destroy();
-                this->acquire(other.release(), Purpose::adopt);
+                this->acquire(other.release());
             }
             return *this;
         }
@@ -134,13 +128,21 @@ namespace gudev::detail {
 
 
         void
-        acquire(CType* new_raw,
-                Purpose purp)
+        acquire(BaseType::raw_type new_raw)
+            noexcept
         {
             BaseType::acquire(new_raw);
             this->set_wrapper();
-            if (purp != Purpose::adopt)
-                this->ref();
+        }
+
+
+        void
+        alias(BaseType::raw_type new_raw)
+            noexcept
+        {
+            BaseType::acquire(new_raw);
+            this->set_wrapper();
+            this->ref();
         }
 
 

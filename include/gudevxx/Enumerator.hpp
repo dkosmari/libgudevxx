@@ -1,8 +1,8 @@
 /*
- *  libgudevxx - a C++ wrapper for libgudev
+ * libgudevxx - a C++ wrapper for libgudev
  *
- *  Copyright (C) 2025  Daniel K. O.
- *  SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2025  Daniel K. O.
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #ifndef LIBGUDEVXX_ENUMERATOR_HPP
@@ -27,10 +27,24 @@ namespace gudev {
         using BaseType = detail::GObjectWrapper<GUdevEnumerator>;
 
 
-        Enumerator(std::nullptr_t)
+        Enumerator(std::nullptr_t = nullptr)
             noexcept;
 
         Enumerator(Client& client);
+
+
+        void
+        create(Client& client);
+
+
+        /// Move constructor.
+        Enumerator(Enumerator&& other)
+            noexcept;
+
+        /// Move assignment.
+        Enumerator&
+        operator =(Enumerator&& other)
+            noexcept;
 
 
         Enumerator&

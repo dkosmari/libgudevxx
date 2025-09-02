@@ -1,8 +1,8 @@
 /*
- *  libgudevxx - a C++ wrapper for libgudev
+ * libgudevxx - a C++ wrapper for libgudev
  *
- *  Copyright (C) 2025  Daniel K. O.
- *  SPDX-License-Identifier: GPL-3.0-or-later
+ * Copyright (C) 2025  Daniel K. O.
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #include "gudevxx/Enumerator.hpp"
@@ -17,9 +17,30 @@ namespace gudev {
     {}
 
 
-    Enumerator::Enumerator(Client& client) :
-        BaseType{g_udev_enumerator_new(client.data()), detail::Purpose::adopt}
-    {}
+    Enumerator::Enumerator(Client& client)
+    {
+        create(client);
+    }
+
+
+    void
+    Enumerator::create(Client& client)
+    {
+        auto ptr = g_udev_enumerator_new(client.data());
+        if (!ptr)
+            throw std::runtime_error{"Could not create new GUdevEnumerator"};
+        destroy();
+        acquire(ptr);
+    }
+
+
+    Enumerator::Enumerator(Enumerator&& other)
+        noexcept = default;
+
+
+    Enumerator&
+    Enumerator::operator =(Enumerator&& other)
+        noexcept = default;
 
 
     Enumerator&
@@ -104,7 +125,7 @@ namespace gudev {
         auto devs = utils::gobj_list_to_vector<GUdevDevice*>(list);
         std::vector<Device> result;
         for (auto& d : devs)
-            result.push_back(Device{d, detail::Purpose::adopt});
+            result.push_back(Device::make_owner(d));
         return result;
     }
 
