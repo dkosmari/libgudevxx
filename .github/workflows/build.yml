@@ -16,13 +16,13 @@ jobs:
 
       - uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: doxygen libgudev-1.0-dev libglibmm-2.68-dev
+          packages: libgudev-1.0-dev libglibmm-2.68-dev
 
       - name: bootstrap
         run: ./bootstrap
 
       - name: configure
-        run: ./configure
+        run: ./configure --enable-examples
 
       - name: make
         run: make
