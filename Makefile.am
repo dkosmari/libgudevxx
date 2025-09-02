@@ -15,6 +15,7 @@ SUBDIRS = . examples
 gudevxxdir = $(includedir)/gudevxx
 
 gudevxx_HEADERS = \
+	include/gudevxx/basic_wrapper.hpp \
 	include/gudevxx/Client.hpp \
 	include/gudevxx/GObjectWrapper.hpp \
 	include/gudevxx/Device.hpp \

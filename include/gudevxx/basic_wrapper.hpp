@@ -13,7 +13,6 @@
 #ifndef LIBGUDEVXX_BASIC_WRAPPER_HPP
 #define LIBGUDEVXX_BASIC_WRAPPER_HPP
 
-
 namespace gudev::detail {
 
     template<typename T,

@@ -1,5 +1,4 @@
-libgudevxx - a C++ wrapper for libgudev
-=======================================
+# libgudevxx - a C++ wrapper for libgudev
 
 `libgudevxx` is a C++20 wrapper for `libgudev`, which is a GObject wrapper for `libudev`, which is
 a library for the `udev` Linux kernel subsystem.
@@ -10,8 +9,7 @@ not depend on glibmm, it comes with its own thin wrapper to convert GLib data ty
 types.
 
 
-Usage
------
+## Usage
 
 The API mimics libgudev, so you should consult the libgudev documentation for reference.
 
@@ -26,9 +24,7 @@ The library provides 3 classes in the namespace `gudev`:
   - `gudev::Device`: holds metadata about a device. The most useful ones are name, device
     file path, properties and tags.
 
-  - `gudev::Enumerator`: provides querying rules to obtain lists of devices. It can be
-    more useful than using `gudev::Client`, because it can only return zero, one or all
-    devices.
+  - `gudev::Enumerator`: provides querying rules to obtain lists of devices.
 
 These classes are defined in their respective headers:
 
@@ -38,37 +34,44 @@ These classes are defined in their respective headers:
 #include <gudevxx/Enumerator.hpp>
 ```
 
+You can also just include `<gudevxx/gudevxx.hpp>` to include all headers.
+
 A `pkg-config` script is available, `libgudevxx.pc`, that helps with compiler and linker
 flags:
 
     g++ -std=c++20 test_prog.cpp `pkg-config --cflags --libs libgudevxx`
 
 
-Examples
---------
+## Examples
 
 There's no short example to embed here yet. Check out the [examples](examples) directory.
 
 
-Installing
-----------
+## Building
 
-Prerequisites:
+### Dependencies
 
-  - a C++20 compiler
-  - [libgudev](http://gitlab.gnome.org/GNOME/libgudev)
-  - [glibmm](http://gitlab.gnome.org/GNOME/glibmm) (optional, for building examples)
+- A C++20 compiler with an adequate C++ development environment. This is usually done by
+  installing some meta package like `task-c++` or `build-essential`. In addition, you may
+  need to manually install:
+  - `autoconf`
+  - `automake`
+  - `libtool`
+  - `pkg-config`
 
-If you did not obtain the code from a tarball, you may need to run the `./bootstrap`
-script once, to generate the `configure` script:
+- [libgudev](http://gitlab.gnome.org/GNOME/libgudev): you will need the "devel" version of
+  the package.
+- [glibmm](http://gitlab.gnome.org/GNOME/glibmm): Optional, for building examples, you'll
+  need the "devel" version of the package.
 
-    ./bootstrap
+### Instructions
 
-After that, you can run:
+If you downloaded a release tarball, you can skip step 0.
 
-    ./configure
-    make
-    sudo make install
+0. `bootstrap`
+1. `./configure`
+2. `make`
+3. `sudo make install`
 
-For more installation options, see [INSTALL](INSTALL) or the output of
-`./configure --help`.
+For more installation options, see [INSTALL](INSTALL) or the output of `./configure
+--help`.
