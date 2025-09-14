@@ -22,9 +22,8 @@ jobs:
           packages: libgudev-1.0-dev libglibmm-2.68-dev
           version: build
 
-      - name: ccache
-        uses: hendrikmuhs/ccache-action@latest
-        with:
+      - name: Use ccache
+        uses: hendrikmuhs/ccache-action@v1.2
           create-symlink: true
 
       - name: Checkout
