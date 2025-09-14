@@ -5,11 +5,12 @@ ACLOCAL_AMFLAGS = -I m4
 EXTRA_DIST = \
 	bootstrap \
 	libgudevxx.pc.in \
-	libgudevxx.spec.in \
 	README.md
 
 
-SUBDIRS = . examples
+SUBDIRS = \
+	. \
+	examples
 
 
 gudevxxdir = $(includedir)/gudevxx
@@ -49,22 +50,12 @@ pcfile_DATA = libgudevxx.pc
 
 # Don't leave empty directories behind during uninstall
 uninstall-hook:
-	-rmdir --ignore-fail-on-non-empty --parent $(DESTDIR)$(gudevxxdir)
-	-rmdir --ignore-fail-on-non-empty --parent $(DESTDIR)$(libdir)
-	-rmdir --ignore-fail-on-non-empty --parent $(DESTDIR)$(pcfiledir)
-
-
-.PHONY: rpm
-
-RPM_TARBALL_NAME = $(HOME)/rpmbuild/SOURCES/$(TARBALL_NAME)
-
-rpm: libgudevxx.spec dist-gzip
-	[ -e $(RPM_TARBALL_NAME) ] || \
-		ln -s $(PWD)/$(TARBALL_NAME) $(RPM_TARBALL_NAME)
-	rpmbuild -ba $<
+	-rmdir --ignore-fail-on-non-empty $(DESTDIR)$(gudevxxdir)
 
 
 .PHONY: company
+
+
 company: compile_flags.txt
 
 compile_flags.txt: Makefile

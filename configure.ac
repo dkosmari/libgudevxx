@@ -52,6 +52,5 @@ AC_SUBST([TARBALL_NAME])
 
 AC_CONFIG_FILES([Makefile
                  examples/Makefile
-                 libgudevxx.pc
-                 libgudevxx.spec])
+                 libgudevxx.pc])
 AC_OUTPUT
