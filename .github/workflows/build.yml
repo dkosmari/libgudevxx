@@ -24,6 +24,7 @@ jobs:
 
       - name: Use ccache
         uses: hendrikmuhs/ccache-action@v1.2
+        with:
           create-symlink: true
 
       - name: Checkout
