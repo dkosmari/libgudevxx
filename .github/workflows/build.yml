@@ -16,6 +16,9 @@ jobs:
 
     steps:
 
+      - name: Checkout
+        uses: actions/checkout@v5
+
       - name: Install dependencies
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
@@ -26,9 +29,6 @@ jobs:
         uses: hendrikmuhs/ccache-action@v1.2
         with:
           create-symlink: true
-
-      - name: Checkout
-        uses: actions/checkout@v5
 
       - name: Bootstrap
         run: ./bootstrap
