@@ -16,17 +16,19 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v5
-
       - name: Install dependencies
-      - uses: awalsh128/cache-apt-pkgs-action@latest
+        uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: libgudev-1.0-dev libglibmm-2.68-dev
+          version: build
 
-      - name: bootstrap
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Bootstrap
         run: ./bootstrap
 
-      - name: configure
+      - name: Configure
         run: ./configure --enable-examples
 
       - name: Build
