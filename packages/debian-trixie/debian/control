@@ -19,9 +19,9 @@ Multi-Arch: same
 Pre-Depends:
  ${misc:Pre-Depends},
 Depends:
- libgudev-1.0-0,
  ${misc:Depends},
  ${shlibs:Depends},
+ libgudev-1.0-0,
 Description: The runtime package for libgudevxx.
  libgudevxx is a C++ wrapper for libgudev.
  This package contains the shared library.
@@ -31,8 +31,9 @@ Section: libdevel
 Architecture: any
 Multi-Arch: same
 Depends:
- libgudevxx (= ${binary:Version}),
  ${misc:Depends},
+ libgudevxx (= ${binary:Version}),
+ libgudev-1.0-dev,
 Description: The development package for libgudevxx.
  libgudevxx is a C++ wrapper for libgudev.
  This package contains the development files.
