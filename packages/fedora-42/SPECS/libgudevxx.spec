@@ -1,10 +1,10 @@
-%define libname    %mklibname gudevxx
-%define devname    %mklibname gudevxx -d
-%define staticname %mklibname gudevxx -d -s
+%define libname    libgudevxx
+%define devname    libgudevxx-devel
+%define staticname libgudevxx-static-devel
 
 Name:           libgudevxx
 Version:        0.3
-Release:        %mkrel 1
+Release:        1%{?dist}
 Summary:        A C++20 wrapper for libgudev.
 Group:          System/Libraries
 License:        GPLv3
@@ -22,13 +22,6 @@ BuildRequires:  pkgconfig(gudev-1.0)
 #############
 ## library ##
 #############
-
-%package -n     %{libname}
-Summary:        A C++ wrapper for libgudev.
-Group:          System/Libraries
-
-%description -n %{libname}
-This is the library needed to run programs linked with %{libname}.
 
 
 ###########
