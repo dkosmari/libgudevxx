@@ -8,7 +8,7 @@ RUN apt -q -y install wget
 
 # Install dependencies
 RUN apt -q -y install build-essential autoconf-archive pkg-config
-RUN apt -q -y libgudev-1.0-dev
+RUN apt -q -y install libgudev-1.0-dev
 
 WORKDIR /buildroot
 
