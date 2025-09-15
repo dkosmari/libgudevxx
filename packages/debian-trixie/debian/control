@@ -19,7 +19,7 @@ Multi-Arch: same
 Pre-Depends:
  ${misc:Pre-Depends},
 Depends:
- libgudev-1.0,
+ libgudev-1.0-0,
  ${misc:Depends},
  ${shlibs:Depends},
 Description: The runtime package for libgudevxx.
