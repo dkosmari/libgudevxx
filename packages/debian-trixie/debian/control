@@ -1,0 +1,49 @@
+Source: libgudevxx
+Section: unknown
+Priority: optional
+Maintainer: Daniel K. O.
+Build-Depends:
+ debhelper-compat (= 13),
+ pkgconf,
+ build-essential,
+Build-Depends-Indep:
+ libgudev-1.0-dev,
+Standards-Version: 4.7.0
+Homepage: https://github.com/dkosmari/libgudevxx
+Rules-Requires-Root: no
+
+Package: libgudevxx
+Section: libs
+Architecture: any
+Multi-Arch: same
+Pre-Depends:
+ ${misc:Pre-Depends},
+Depends:
+ libgudev-1.0,
+ ${misc:Depends},
+ ${shlibs:Depends},
+Description: The runtime package for libgudevxx.
+ libgudevxx is a C++ wrapper for libgudev.
+ This package contains the shared library.
+
+Package: libgudevxx-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends:
+ libgudevxx (= ${binary:Version}),
+ ${misc:Depends},
+Description: The development package for libgudevxx.
+ libgudevxx is a C++ wrapper for libgudev.
+ This package contains the development files.
+
+Package: libgudevxx-static-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends:
+ ${misc:Depends},
+ libgudev-1.0-dev,
+Description: The static development package for libgudevxx.
+ libgudevxx is a C++ wrapper for libgudev.
+ This package contains the static development files.

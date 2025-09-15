@@ -1,0 +1,3 @@
+usr/include/gudevxx/*
+usr/lib/*/lib*.a
+usr/lib/*/pkgconfig/*.pc
